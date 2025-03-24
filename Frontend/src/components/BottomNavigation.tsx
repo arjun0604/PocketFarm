@@ -6,11 +6,11 @@ const BottomNavigation: React.FC = () => {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    return location.pathname === path ? 'text-pocketfarm-primary' : 'text-pocketfarm-gray';
+    return location.pathname === path ? 'text-primary' : 'text-muted-foreground';
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-[100] shadow-lg">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-[100] shadow-lg">
       <div className="container mx-auto flex items-center justify-around py-2">
         <Link to="/dashboard" className={`flex flex-col items-center p-2 ${isActive('/dashboard')}`}>
           <Home className="h-5 w-5" />

@@ -15,6 +15,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Calendar } from '@/components/ui/calendar';
 import BottomNavigation from '@/components/BottomNavigation';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 interface UserCropSchedule {
   id: number;
@@ -46,6 +47,7 @@ const WateringSchedule: React.FC = () => {
   const [wateredCrops, setWateredCrops] = useState<Set<string>>(new Set());
   const [isWateringToday, setIsWateringToday] = useState<boolean>(true);
   const [localWateredStatus, setLocalWateredStatus] = useState<Record<string, boolean>>({});
+  const { goBack } = useNavigationHistory('/garden');
 
   // Fetch user's crop schedules
   const { data: cropSchedules, isLoading: isLoadingSchedules } = useQuery({
@@ -261,11 +263,11 @@ const WateringSchedule: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background pb-16">
       <Header 
         title="Watering Schedule" 
         showBackButton 
-        onBackClick={() => navigate('/garden')}
+        onBackClick={goBack}
         notifications={notifications}
       />
       

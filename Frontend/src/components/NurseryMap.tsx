@@ -142,7 +142,6 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
       variant={currentFilter === type ? 'default' : 'outline'}
       size="sm"
       onClick={onClick}
-      className={currentFilter === type ? 'bg-pocketfarm-primary hover:bg-pocketfarm-dark' : ''}
     >
       {type === 'all' ? 'All' : type === 'nursery' ? 'Nurseries' : 'Supplies'}
     </Button>
@@ -151,7 +150,7 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-pocketfarm-primary">Nearby Plant Nurseries & Supplies</h2>
+        <h2 className="text-2xl font-semibold text-primary">Nearby Plant Nurseries & Supplies</h2>
         <Button
           variant="outline"
           size="sm"
@@ -166,9 +165,9 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
       </div>
 
       {userLocation && (
-        <div className="bg-gray-100 rounded-md p-3 flex items-center justify-between mb-4">
+        <div className="bg-muted rounded-md p-3 flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-pocketfarm-primary" />
+            <MapPin className="h-4 w-4 text-primary" />
             <span className="text-sm">
               {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
             </span>
@@ -183,12 +182,11 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
 
       <div className="flex justify-end mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-pocketfarm-gray">Sort by:</span>
+          <span className="text-sm text-muted-foreground">Sort by:</span>
           <Button
             variant={sortBy === 'distance' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSortBy('distance')}
-            className={sortBy === 'distance' ? 'bg-pocketfarm-primary hover:bg-pocketfarm-dark' : ''}
           >
             Distance
           </Button>
@@ -196,7 +194,6 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
             variant={sortBy === 'rating' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSortBy('rating')}
-            className={sortBy === 'rating' ? 'bg-pocketfarm-primary hover:bg-pocketfarm-dark' : ''}
           >
             Rating
           </Button>
@@ -205,17 +202,16 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
 
       {isLoading ? (
         <div className="py-12 text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2 text-pocketfarm-primary" />
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-2 text-primary" />
           <p>Loading nearby nurseries...</p>
         </div>
       ) : !userLocation ? (
-        <div className="py-12 text-center bg-yellow-50 rounded-lg">
+        <div className="py-12 text-center bg-muted rounded-lg">
           <AlertCircle className="h-10 w-10 text-yellow-500 mx-auto mb-2" />
           <p className="text-lg font-medium">Location access required</p>
           <p className="mb-4">We need your location to find nurseries near you</p>
           <Button
             onClick={refreshLocation}
-            className="bg-pocketfarm-primary hover:bg-pocketfarm-dark"
           >
             Allow Location Access
           </Button>
@@ -224,7 +220,7 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {sortedNurseries.length > 0 ? (
             sortedNurseries.map((nursery) => (
-              <Card key={nursery.id} className="border-pocketfarm-secondary/30 h-full">
+              <Card key={nursery.id} className="h-full">
                 <CardHeader className="pb-2">
                   <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
@@ -232,8 +228,8 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
                       <div className="flex items-center gap-2">
                         <Badge className={`px-2 py-0.5 text-xs font-medium ${
                           nursery.type === 'nursery' 
-                            ? 'bg-blue-100 text-blue-700 border border-blue-200' 
-                            : 'bg-orange-100 text-orange-700 border border-orange-200'
+                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800' 
+                            : 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-800'
                         }`}>
                           {nursery.type === 'nursery' ? 'Nursery' : 'Supplies'}
                         </Badge>
@@ -244,13 +240,13 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
                         <MapPin className="h-3 w-3" />
                         <span>
                           {nursery.address_loading ? (
-                            <span className="text-pocketfarm-gray animate-pulse">Loading address...</span>
+                            <span className="text-muted-foreground animate-pulse">Loading address...</span>
                           ) : (
                             nursery.address
                           )}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-pocketfarm-gray">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span>{nursery.distance} km away</span>
                         {nursery.phone && (
                           <span className="flex items-center gap-1">
@@ -311,7 +307,7 @@ const NurseryMap: React.FC<NurseryMapProps> = ({ location }) => {
               <Button
                 variant="link"
                 onClick={() => setFilterType('all')}
-                className="text-pocketfarm-primary"
+                className="text-primary"
               >
                 Show all locations
               </Button>

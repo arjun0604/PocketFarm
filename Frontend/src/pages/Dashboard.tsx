@@ -173,7 +173,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header 
         title="PocketFarm" 
         notifications={notifications}
@@ -185,7 +185,7 @@ const Dashboard: React.FC = () => {
             <h2 className="text-2xl font-bold">Hello, {user?.name || 'Gardener'}</h2>
             {userLocation ? (
               <div>
-                <p className="text-pocketfarm-gray flex items-center mt-1">
+                <p className="text-muted-foreground flex items-center mt-1">
                   <MapPin className="h-4 w-4 mr-1" />
                   {userLocation.city || 'Your Location'}{' '}
                   {userLocation.city && (
@@ -196,7 +196,7 @@ const Dashboard: React.FC = () => {
                 </p>
                 <Button
                   variant="link"
-                  className="text-pocketfarm-gray flex items-center p-0 h-auto mt-1"
+                  className="text-muted-foreground flex items-center p-0 h-auto mt-1"
                   onClick={refreshLocation}
                   disabled={isLoadingLocation}
                 >
@@ -208,7 +208,7 @@ const Dashboard: React.FC = () => {
               <p>Loading location...</p>
             )}
           </div>
-          <Card className="w-auto border-pocketfarm-secondary/30">
+          <Card className="w-auto">
             <CardContent className="p-3 flex items-center gap-2">
               {weatherInfo.condition.includes('Rain') ? (
                 <CloudRain className="h-5 w-5 text-blue-500" />
@@ -217,7 +217,7 @@ const Dashboard: React.FC = () => {
               )}
               <div>
                 <p className="text-sm font-medium">{weatherInfo.temp}°C</p>
-                <p className="text-xs text-pocketfarm-gray">{weatherInfo.condition}</p>
+                <p className="text-xs text-muted-foreground">{weatherInfo.condition}</p>
               </div>
             </CardContent>
           </Card>
@@ -226,24 +226,24 @@ const Dashboard: React.FC = () => {
         {/* Quick actions */}
         <div className="grid grid-cols-2 gap-4">
           <Link to="/recommendations">
-            <Card className="border-pocketfarm-secondary/30 h-full hover:shadow-md transition-shadow">
+            <Card className="h-full hover:shadow-md transition-shadow">
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="bg-pocketfarm-light rounded-full p-3 mb-3">
-                  <Search className="h-6 w-6 text-pocketfarm-primary" />
+                <div className="bg-muted rounded-full p-3 mb-3">
+                  <Search className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-medium">Find Crops</h3>
-                <p className="text-sm text-pocketfarm-gray mt-1">Get personalized crop recommendations</p>
+                <p className="text-sm text-muted-foreground mt-1">Get personalized crop recommendations</p>
               </CardContent>
             </Card>
           </Link>
           <Link to="/nursery-finder">
-            <Card className="border-pocketfarm-secondary/30 h-full hover:shadow-md transition-shadow">
+            <Card className="h-full hover:shadow-md transition-shadow">
               <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="bg-pocketfarm-light rounded-full p-3 mb-3">
-                  <MapPin className="h-6 w-6 text-pocketfarm-primary" />
+                <div className="bg-muted rounded-full p-3 mb-3">
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-medium">Nursery Finder</h3>
-                <p className="text-sm text-pocketfarm-gray mt-1">Find nearby nurseries and shops</p>
+                <p className="text-sm text-muted-foreground mt-1">Find nearby nurseries and shops</p>
               </CardContent>
             </Card>
           </Link>
@@ -254,7 +254,7 @@ const Dashboard: React.FC = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">My Garden</h2>
             <Link to="/user-crops">
-              <Button variant="link" className="text-pocketfarm-primary p-0 h-auto">
+              <Button variant="link" className="text-primary p-0 h-auto">
                 View all crops <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
@@ -269,11 +269,11 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           ) : (
-            <Card className="border-pocketfarm-secondary/30">
+            <Card>
               <CardContent className="p-6 text-center">
                 <p className="mb-4">You haven't added any crops to your garden yet</p>
                 <Link to="/recommendations">
-                  <Button className="bg-pocketfarm-primary hover:bg-pocketfarm-dark">
+                  <Button>
                     Find crops to grow
                   </Button>
                 </Link>
@@ -284,13 +284,13 @@ const Dashboard: React.FC = () => {
 
         {/* Quick access to crop library */}
         <Link to="/crop-library">
-          <Card className="border-pocketfarm-secondary/30 hover:shadow-md transition-shadow">
+          <Card className="hover:shadow-md transition-shadow">
             <CardContent className="p-6 flex justify-between items-center">
               <div>
                 <h3 className="font-medium">Crop Library</h3>
-                <p className="text-sm text-pocketfarm-gray">Search and browse all available crops</p>
+                <p className="text-sm text-muted-foreground">Search and browse all available crops</p>
               </div>
-              <ChevronRight className="h-5 w-5 text-pocketfarm-gray" />
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </CardContent>
           </Card>
         </Link>

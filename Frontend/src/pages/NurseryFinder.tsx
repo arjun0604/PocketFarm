@@ -6,11 +6,13 @@ import { toast } from 'sonner';
 import BottomNavigation from '@/components/BottomNavigation';
 import Header from '@/components/Header';
 import NurseryMap from '@/components/NurseryMap';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 const NurseryFinder: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { goBack } = useNavigationHistory();
 
   useEffect(() => {
     const loadLocation = async () => {
@@ -33,11 +35,11 @@ const NurseryFinder: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-background pb-16">
       <Header 
         title="Plant Nurseries & Garden Centers" 
         showBackButton 
-        onBackClick={() => window.history.back()}
+        onBackClick={goBack}
       />
 
       <main className="container mx-auto px-4 py-6">

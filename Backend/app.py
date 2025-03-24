@@ -1,22 +1,28 @@
 from flask import Flask, request, jsonify, g
 import requests
 import sqlite3
-from crops import recommend_crops  # Ensure crops.py exists and contains recommend_crops
+from crops import recommend_crops
 from flask_socketio import SocketIO, join_room, emit
 import time
 import threading
 import os
 from functools import lru_cache
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 from dotenv import load_dotenv
 import bcrypt
 from datetime import datetime, timedelta
 import math
 import logging
-import socketio
 import traceback
 import random
 import sys
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+import uuid
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import yagmail
 
 # Load environment variables
 load_dotenv()
@@ -33,19 +39,24 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 CORS(app, supports_credentials=True, origins=["https://localhost:8080", "http://localhost:8080", 
                           "https://127.0.0.1:8080", "http://127.0.0.1:8080"])
 
-# Configure Socket.IO
+# Configure Socket.IO with proper CORS settings
 socketio = SocketIO(app, 
                    cors_allowed_origins=["https://localhost:8080", "http://localhost:8080", 
-                                        "https://127.0.0.1:8080", "http://127.0.0.1:8080"],
+                                       "https://127.0.0.1:8080", "http://127.0.0.1:8080"],
                    logger=True,
                    engineio_logger=True,
                    ping_timeout=60,
-                   ping_interval=25)
+                   ping_interval=25,
+                   async_mode='threading',
+                   always_connect=True,
+                   cors_credentials=True,
+                   websocket_ping_interval=25,
+                   manage_session=False)
 
 # Add CORS headers to all responses
 @app.after_request
 def add_cors_headers(response):
-    response.headers.add('Access-Control-Allow-Origin', request.headers.get('Origin', '*'))
+    response.headers.add('Access-Control-Allow-Origin', 'https://localhost:8080')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
@@ -80,7 +91,7 @@ def on_join(data):
 # Use environment variable for API key
 API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 if not API_KEY:
-    raise ValueError("OpenWeatherMap API key is missing. Set OPENWEATHERMAP_API_KEY in .env file.")
+    logger.warning("OpenWeatherMap API key is missing. Set OPENWEATHERMAP_API_KEY in .env file.")
 
 # Add these constants after the API_KEY definition
 WEATHER_ALERT_THRESHOLDS = {
@@ -909,28 +920,121 @@ def signup():
 
         if not name or not email or not password:
             return jsonify({'error': 'Missing required fields: name, email, or password'}), 400
-
+            
+        # Basic email validation
+        if '@' not in email or '.' not in email:
+            return jsonify({'error': 'Invalid email format'}), 400
+        
+        # Password strength validation
+        password_errors = []
+        
+        if len(password) < 8:
+            password_errors.append("Password must be at least 8 characters long")
+        
+        if not any(char.isupper() for char in password):
+            password_errors.append("Password must contain at least one uppercase letter")
+            
+        if not any(char.isdigit() for char in password):
+            password_errors.append("Password must contain at least one number")
+            
+        if not any(char in "!@#$%^&*()_+-=[]{}\\|;:'\",.<>/?`~" for char in password):
+            password_errors.append("Password must contain at least one special character")
+            
+        if ' ' in password:
+            password_errors.append("Password cannot contain spaces")
+            
+        if password_errors:
+            return jsonify({
+                'error': 'Password is not strong enough',
+                'password_errors': password_errors
+            }), 400
+            
+        # Check if email already exists
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            conn.close()
+            return jsonify({'error': 'Email already registered'}), 409
+        
         # Hash the password
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        # Geocode the location to get city, state, and country
-        geocode_result = cached_geocode(location['latitude'], location['longitude'])
-        city = geocode_result['data'].get('city', 'Unknown')
-        state = geocode_result['data'].get('state', 'Unknown')
-        country = geocode_result['data'].get('country', 'Unknown')
+        # If location is provided, geocode it to get city, state, and country
+        city = state = country = None
+        latitude = longitude = None
+        
+        # Check if location is provided and has valid coordinates
+        valid_location = (location and 
+                         location.get('latitude') is not None and 
+                         location.get('longitude') is not None and
+                         isinstance(location.get('latitude'), (int, float)) and
+                         isinstance(location.get('longitude'), (int, float)))
+        
+        if valid_location:
+            latitude = location.get('latitude')
+            longitude = location.get('longitude')
+            
+            try:
+                # Try to geocode the location
+                geocode_result = cached_geocode(latitude, longitude)
+                
+                if geocode_result and geocode_result.get('data'):
+                    data = geocode_result.get('data', {})
+                    
+                    if geocode_result.get('source') == "openweathermap":
+                        city = data.get('name', 'Unknown')
+                        state = data.get('state', 'Unknown')
+                        country = data.get('country', 'Unknown')
+                    else:
+                        address = data.get('address', {})
+                        city = address.get('city') or address.get('town') or address.get('village') or 'Unknown'
+                        state = address.get('state', 'Unknown')
+                        country = address.get('country', 'Unknown')
+            except Exception as e:
+                logger.error(f"Geocoding error: {str(e)}")
+                # Continue with signup even if geocoding fails
+                city = "Kochi"
+                state = "Kerala"
+                country = "India"
+                # Keep the provided latitude and longitude
+        else:
+            # Set default values for location
+            logger.info("No valid location provided during signup")
+            city = "Kochi"
+            state = "Kerala"
+            country = "India"
+            latitude = 9.9312
+            longitude = 76.2673
 
-        # Insert the user into the database
-        conn = sqlite3.connect('PocketFarm.db')
-        cursor = conn.cursor()
+        # Insert the user into the database with email_verified set to 0 (false)
         cursor.execute(
-            "INSERT INTO users (name, email, password, phone, location_city, location_state, location_country, location_latitude, location_longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (name, email, hashed_password, phone, city, state, country, location['latitude'], location['longitude'])
+            "INSERT INTO users (name, email, password, phone, location_city, location_state, location_country, location_latitude, location_longitude, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)",
+            (name, email, hashed_password, phone, city, state, country, latitude, longitude)
         )
         user_id = cursor.lastrowid
+        
+        # Generate verification token
+        verification_token = str(uuid.uuid4())
+        expires_at = (datetime.now() + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Save token to database
+        cursor.execute(
+            "INSERT INTO verification_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+            (user_id, verification_token, expires_at)
+        )
+        
         conn.commit()
         conn.close()
-
-        # Return the user data including location
+        
+        # Send verification email
+        email_sent = send_verification_email(email, verification_token, user_id)
+        
+        if not email_sent:
+            logger.error(f"Failed to send verification email to {email}")
+        
+        # Return clear message that account requires verification
         return jsonify({
             'id': user_id,
             'name': name,
@@ -940,12 +1044,18 @@ def signup():
                 'city': city,
                 'state': state,
                 'country': country,
-                'latitude': location['latitude'],
-                'longitude': location['longitude'],
-            }
+                'latitude': latitude,
+                'longitude': longitude,
+            },
+            'message': 'Account created successfully! Please check your email to verify your account before logging in.',
+            'verification_sent': email_sent,
+            'requires_verification': True,
+            'email_verified': False
         }), 200
     except Exception as e:
+        logger.error(f"Signup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -955,9 +1065,13 @@ def login():
 
         if not email or not password:
             return jsonify({'error': 'Missing required fields: email or password'}), 400
+            
+        # Basic email validation
+        if '@' not in email or '.' not in email:
+            return jsonify({'error': 'Invalid email format'}), 400
 
         # Fetch the user from the database
-        conn = sqlite3.connect('PocketFarm.db')
+        conn = get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
         user = cursor.fetchone()
@@ -970,6 +1084,17 @@ def login():
         hashed_password = user[3]  # Password is stored in the 4th column
         if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
             return jsonify({'error': 'Invalid password'}), 401
+            
+        # Check if email is verified
+        email_verified = user[10] if len(user) > 10 else False
+        
+        if not email_verified:
+            return jsonify({
+                'error': 'Email not verified',
+                'user_id': user[0],
+                'email': user[2],
+                'requires_verification': True
+            }), 403
 
         # Join the user's socket room for weather updates
         socketio.emit('join_room', {'room': f'user_{user[0]}'})
@@ -979,14 +1104,15 @@ def login():
             'id': user[0],
             'name': user[1],
             'email': user[2],
-            'phone': user[4],
+            'phone': user[4] if len(user) > 4 else None,
             'location': {
-                'city': user[5],
-                'state': user[6],
-                'country': user[7],
-                'latitude': user[8],
-                'longitude': user[9],
-            }
+                'city': user[5] if len(user) > 5 else None,
+                'state': user[6] if len(user) > 6 else None,
+                'country': user[7] if len(user) > 7 else None,
+                'latitude': user[8] if len(user) > 8 else None,
+                'longitude': user[9] if len(user) > 9 else None,
+            },
+            'email_verified': True
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -1178,6 +1304,67 @@ def create_notification(user_id, message):
             print(f"Error creating notification: {str(e)}")
             raise
 
+def send_verification_email(to_email, verification_token, user_id):
+    """Send a verification email to the user."""
+    try:
+        # Get email credentials from environment variables
+        email_user = os.getenv('EMAIL_USER')
+        email_password = os.getenv('EMAIL_PASSWORD')
+        
+        if not email_user or not email_password:
+            logger.error("Email credentials are missing. Set EMAIL_USER and EMAIL_PASSWORD in .env file.")
+            return False
+            
+        # Log email credentials (partially hidden)
+        logger.info(f"Using email: {email_user}")
+        
+        # Create verification link with correct port (8081 instead of 8080)
+        verification_link = f"https://localhost:8081/verify-email?token={verification_token}&user_id={user_id}"
+        
+        # Email content
+        subject = "Verify your PocketFarm account"
+        html_content = f"""
+        <html>
+        <body>
+            <h2>Welcome to PocketFarm!</h2>
+            <p>Thank you for signing up. Please verify your email address by clicking the link below:</p>
+            <p><a href="{verification_link}">Verify Email</a></p>
+            <p>If you didn't create this account, you can ignore this email.</p>
+            <p>Best regards,<br>The PocketFarm Team</p>
+        </body>
+        </html>
+        """
+        
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            from email.mime.multipart import MIMEMultipart
+            
+            # Create message
+            message = MIMEMultipart("alternative")
+            message["Subject"] = subject
+            message["From"] = email_user
+            message["To"] = to_email
+            
+            # Add HTML content
+            html_part = MIMEText(html_content, "html")
+            message.attach(html_part)
+            
+            # Connect to Gmail SMTP server
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(email_user, email_password)
+                server.sendmail(email_user, to_email, message.as_string())
+            
+            logger.info(f"Verification email sent to {to_email}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to send email with smtplib: {str(e)}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Error in email sending: {str(e)}")
+        return False
+
 @app.route('/mark_notifications_read/<int:user_id>', methods=['POST'])
 def mark_notifications_read(user_id):
     try:
@@ -1215,6 +1402,119 @@ def get_users():
         
         return jsonify(formatted_users), 200
     except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/verify-email', methods=['GET'])
+def verify_email():
+    """Verify user's email address."""
+    try:
+        token = request.args.get('token')
+        user_id = request.args.get('user_id')
+        
+        if not token or not user_id:
+            return jsonify({'error': 'Invalid verification link'}), 400
+            
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if the token is valid
+        cursor.execute("""
+            SELECT * FROM verification_tokens 
+            WHERE user_id = ? AND token = ? AND expires_at > datetime('now')
+        """, (user_id, token))
+        verification = cursor.fetchone()
+        
+        if not verification:
+            conn.close()
+            return jsonify({'error': 'Invalid or expired verification link'}), 400
+            
+        # Update user's verification status
+        cursor.execute("""
+            UPDATE users 
+            SET email_verified = 1 
+            WHERE id = ?
+        """, (user_id,))
+        
+        # Delete used token
+        cursor.execute("""
+            DELETE FROM verification_tokens 
+            WHERE user_id = ? AND token = ?
+        """, (user_id, token))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'message': 'Email verified successfully!'}), 200
+    except Exception as e:
+        logger.error(f"Email verification error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/resend-verification', methods=['POST'])
+def resend_verification():
+    """Resend verification email."""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+            
+        logger.info(f"Resending verification email to: {email}")
+            
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if user exists and is not already verified
+        cursor.execute("""
+            SELECT id, email_verified FROM users 
+            WHERE email = ?
+        """, (email,))
+        user = cursor.fetchone()
+        
+        if not user:
+            logger.error(f"User not found for email: {email}")
+            conn.close()
+            return jsonify({'error': 'User not found'}), 404
+            
+        user_id, is_verified = user
+        
+        if is_verified:
+            logger.info(f"Email already verified for: {email}")
+            conn.close()
+            return jsonify({'message': 'Email is already verified'}), 200
+            
+        # Delete any existing tokens
+        cursor.execute("""
+            DELETE FROM verification_tokens 
+            WHERE user_id = ?
+        """, (user_id,))
+        
+        # Generate new verification token
+        verification_token = str(uuid.uuid4())
+        expires_at = (datetime.now() + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Save token to database
+        cursor.execute("""
+            INSERT INTO verification_tokens (user_id, token, expires_at)
+            VALUES (?, ?, ?)
+        """, (user_id, verification_token, expires_at))
+        
+        conn.commit()
+        conn.close()
+        
+        logger.info(f"Generated new verification token for user: {user_id}")
+        
+        # Send verification email
+        email_sent = send_verification_email(email, verification_token, user_id)
+        
+        if email_sent:
+            logger.info(f"Successfully sent verification email to: {email}")
+            return jsonify({'message': 'Verification email sent successfully!'}), 200
+        else:
+            logger.error(f"Failed to send verification email to: {email}")
+            return jsonify({'error': 'Failed to send verification email. Please check server logs for details.'}), 500
+    except Exception as e:
+        logger.error(f"Resend verification error: {str(e)}\n{traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/nurseries', methods=['GET', 'POST'])
@@ -1425,12 +1725,35 @@ def verify_database_schema():
         # Check if tables exist
         cursor.execute("""
             SELECT name FROM sqlite_master 
-            WHERE type='table' AND name IN ('users', 'crops', 'watering_schedules', 'crop_schedule')
+            WHERE type='table' AND name IN ('users', 'crops', 'watering_schedules', 'crop_schedule', 'verification_tokens')
         """)
         existing_tables = [row[0] for row in cursor.fetchall()]
         
-        required_tables = ['users', 'crops', 'watering_schedules', 'crop_schedule']
+        required_tables = ['users', 'crops', 'watering_schedules', 'crop_schedule', 'verification_tokens']
         missing_tables = [table for table in required_tables if table not in existing_tables]
+        
+        if 'verification_tokens' in missing_tables:
+            logger.info("Creating verification_tokens table...")
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS verification_tokens (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    token TEXT NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                )
+            """)
+            conn.commit()
+            missing_tables.remove('verification_tokens')
+            
+        # Check if users table has email_verified column
+        cursor.execute("PRAGMA table_info(users)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        if 'email_verified' not in columns:
+            logger.info("Adding email_verified column to users table...")
+            cursor.execute("ALTER TABLE users ADD COLUMN email_verified INTEGER DEFAULT 0")
+            conn.commit()
         
         if missing_tables:
             print(f"Missing tables: {missing_tables}")
@@ -1438,17 +1761,141 @@ def verify_database_schema():
             
         # Check table schemas
         for table in required_tables:
-            cursor.execute(f"PRAGMA table_info({table})")
-            columns = cursor.fetchall()
-            print(f"\n{table} table schema:")
-            for col in columns:
-                print(f"  {col[1]} ({col[2]})")
+            if table in existing_tables:
+                cursor.execute(f"PRAGMA table_info({table})")
+                columns = cursor.fetchall()
+                print(f"\n{table} table schema:")
+                for col in columns:
+                    print(f"  {col[1]} ({col[2]})")
         
         conn.close()
         return True
     except Exception as e:
         print(f"Error verifying database schema: {str(e)}")
         return False
+
+@app.route('/google_auth', methods=['POST'])
+def google_auth():
+    """Handle Google OAuth authentication with a simpler flow."""
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        email = data.get('email')
+        name = data.get('name')
+        
+        if not email or not name:
+            return jsonify({'error': 'Email and name are required'}), 400
+            
+        logger.info(f"Google Auth - Processing for email: {email}")
+        
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if user exists
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+        
+        if not user:
+            # Create a new user with email verified
+            # Use random password since login is via Google
+            hashed_password = bcrypt.hashpw(os.urandom(16), bcrypt.gensalt())
+            
+            # Get default location for new users (Kochi)
+            city = "Kochi"
+            state = "Kerala"
+            country = "India"
+            latitude = 9.9312
+            longitude = 76.2673
+            
+            cursor.execute(
+                "INSERT INTO users (name, email, password, location_city, location_state, location_country, location_latitude, location_longitude, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)",
+                (name, email, hashed_password, city, state, country, latitude, longitude)
+            )
+            conn.commit()
+            
+            # Get the newly created user
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            user = cursor.fetchone()
+        elif user and len(user) > 10 and user[10] == 0:
+            # If user exists but email not verified, mark as verified now
+            cursor.execute("UPDATE users SET email_verified = 1 WHERE id = ?", (user[0],))
+            conn.commit()
+            
+            # Refresh user data
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            user = cursor.fetchone()
+            
+        conn.close()
+        logger.info(f"Google Auth - Successfully authenticated user: {email}")
+        
+        # Return user data with email_verified flag
+        return jsonify({
+            'id': user[0],
+            'name': user[1],
+            'email': user[2],
+            'phone': user[4] if len(user) > 4 else None,
+            'location': {
+                'city': user[5] if len(user) > 5 else None,
+                'state': user[6] if len(user) > 6 else None,
+                'country': user[7] if len(user) > 7 else None,
+                'latitude': user[8] if len(user) > 8 else None,
+                'longitude': user[9] if len(user) > 9 else None,
+            },
+            'email_verified': True
+        }), 200
+    except Exception as e:
+        logger.error(f"Google auth error: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    """Delete a user account and all associated data."""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'User ID is required'}), 400
+            
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        try:
+            # Start transaction for atomicity
+            cursor.execute('BEGIN TRANSACTION')
+            
+            # Delete verification tokens
+            cursor.execute("DELETE FROM verification_tokens WHERE user_id = ?", (user_id,))
+            
+            # Delete notifications
+            cursor.execute("DELETE FROM notifications WHERE user_id = ?", (user_id,))
+            
+            # Delete watering schedules
+            cursor.execute("DELETE FROM watering_schedules WHERE user_id = ?", (user_id,))
+            
+            # Delete user crops
+            cursor.execute("DELETE FROM user_crops WHERE user_id = ?", (user_id,))
+            
+            # Delete user account
+            cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+            
+            # Commit all changes
+            cursor.execute('COMMIT')
+            
+            logger.info(f"Account deleted for user ID: {user_id}")
+            return jsonify({'message': 'Account and all associated data have been deleted successfully'}), 200
+            
+        except Exception as e:
+            # Rollback in case of error
+            cursor.execute('ROLLBACK')
+            logger.error(f"Error during account deletion: {str(e)}")
+            return jsonify({'error': f'Failed to delete account: {str(e)}'}), 500
+        finally:
+            conn.close()
+            
+    except Exception as e:
+        logger.error(f"Account deletion error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Verify database schema before starting

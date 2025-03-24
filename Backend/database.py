@@ -1,15 +1,61 @@
 import sqlite3
+import os
 import pandas as pd
+from datetime import datetime, timedelta
 
-# Connect to SQLite database (it will create the database file if it doesn't exist)
-conn = sqlite3.connect('PocketFarm.db')
+def get_db():
+    conn = sqlite3.connect('farm.db')
+    conn.row_factory = sqlite3.Row
+    
+    # Enable WAL mode for better concurrency
+    conn.execute("PRAGMA journal_mode=WAL")
+    
+    # Set busy timeout for locked database scenarios
+    conn.execute("PRAGMA busy_timeout=30000")
+    
+    return conn
+
+def check_column_exists(table, column, conn):
+    """Check if a column exists in a table"""
+    cursor = conn.cursor()
+    cursor.execute(f"PRAGMA table_info({table})")
+    columns = [info[1] for info in cursor.fetchall()]
+    return column in columns
+
+conn = get_db()
 cursor = conn.cursor()
 
-# Create the crops table if it doesn't exist
+# Create users table if it doesn't exist
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password BLOB NOT NULL,
+    phone TEXT,
+    location_city TEXT,
+    location_state TEXT,
+    location_country TEXT,
+    location_latitude REAL,
+    location_longitude REAL,
+    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+''')
+
+# Add google_id column if it doesn't exist
+if not check_column_exists('users', 'google_id', conn):
+    print("Adding google_id column to users table...")
+    cursor.execute('''
+    ALTER TABLE users
+    ADD COLUMN google_id TEXT
+    ''')
+
+# Create crops table if it doesn't exist
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS crops (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    name TEXT UNIQUE NOT NULL,
     imageURL TEXT,
     scientific_name TEXT,
     description TEXT,
@@ -66,29 +112,6 @@ cursor.execute('CREATE INDEX IF NOT EXISTS idx_watering_schedules_user_id ON wat
 cursor.execute('CREATE INDEX IF NOT EXISTS idx_watering_schedules_crop_id ON watering_schedules(crop_id)')
 cursor.execute('CREATE INDEX IF NOT EXISTS idx_watering_schedules_next_watering ON watering_schedules(next_watering)')
 cursor.execute('CREATE INDEX IF NOT EXISTS idx_watering_schedules_water_status ON watering_schedules(water_status)')
-
-# Enable WAL mode for better concurrency
-cursor.execute('PRAGMA journal_mode=WAL')
-cursor.execute('PRAGMA busy_timeout=30000')  # 30 seconds
-
-# Create the users table if it doesn't exist
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    phone TEXT,
-    location_city TEXT,
-    location_state TEXT,
-    location_country TEXT,
-    location_latitude REAL,
-    location_longitude REAL,
-    notification_enabled BOOLEAN DEFAULT 1,
-    last_alert_check TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-''')
 
 # Create the user_crops table if it doesn't exist
 cursor.execute('''

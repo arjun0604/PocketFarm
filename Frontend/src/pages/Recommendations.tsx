@@ -13,6 +13,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import Header from '@/components/Header';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 interface Notification {
   id: number;
@@ -33,6 +34,7 @@ const Recommendations: React.FC = () => {
   const { userCrops, addCropToGarden, removeCropFromGarden } = useGarden();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { goBack } = useNavigationHistory();
 
   useEffect(() => {
     const location = getUserLocation();
@@ -178,11 +180,11 @@ const Recommendations: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-background pb-16">
       <Header 
         title="Crop Recommendations" 
         showBackButton 
-        onBackClick={() => navigate(-1)}
+        onBackClick={goBack}
         notifications={notifications}
       />
       
@@ -198,10 +200,10 @@ const Recommendations: React.FC = () => {
             ) : crops.length > 0 ? (
               <>
                 <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-pocketfarm-primary mb-2">
+                  <h2 className="text-xl font-semibold text-primary mb-2">
                     Your Personalized Recommendations
                   </h2>
-                  <p className="text-sm text-pocketfarm-gray">
+                  <p className="text-sm text-muted-foreground">
                     These crops are suited to your growing conditions and location
                   </p>
                 </div>
@@ -221,7 +223,6 @@ const Recommendations: React.FC = () => {
                   <div className="text-center mt-8">
                     <Button
                       onClick={loadMore}
-                      className="bg-pocketfarm-primary hover:bg-pocketfarm-dark"
                     >
                       Load More Recommendations
                     </Button>
@@ -241,7 +242,7 @@ const Recommendations: React.FC = () => {
       {/* Hovering Window for Companion Crops */}
       {selectedCrop && selectedCrop.companion_crops && selectedCrop.companion_crops.length > 0 && wantCompanion && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+          <div className="bg-card rounded-lg p-6 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Companion Plants for {selectedCrop.name}</h3>
               <Button variant="ghost" size="icon" onClick={() => setSelectedCrop(null)}>

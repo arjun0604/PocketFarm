@@ -94,7 +94,7 @@ const CropCard: React.FC<CropCardProps> = ({
   };
 
   return (
-    <Card className={`h-full flex flex-col border-pocketfarm-secondary/30 transition-all hover:shadow-md ${selected ? 'ring-2 ring-pocketfarm-primary' : ''}`}>
+    <Card className={`h-full flex flex-col transition-all hover:shadow-md ${selected ? 'ring-2 ring-primary' : ''}`}>
       {/* Crop Image */}
       <div className="aspect-video w-full overflow-hidden rounded-t-lg">
         <img 
@@ -105,30 +105,30 @@ const CropCard: React.FC<CropCardProps> = ({
       </div>
 
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold text-pocketfarm-primary">{crop.name}</CardTitle>
+        <CardTitle className="text-lg font-semibold text-primary">{crop.name}</CardTitle>
         <CardDescription className="text-xs italic">{crop.scientific_name}</CardDescription>
       </CardHeader>
 
       <CardContent className="flex-grow space-y-2 pb-2">
         {/* Essential Crop Details */}
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
-            <Sun className="h-3 w-3 text-pocketfarm-accent" />
+          <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
+            <Sun className="h-3 w-3 text-yellow-500" />
             {crop.sunlight} Sun
           </Badge>
-          <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
+          <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
             <Droplets className="h-3 w-3 text-blue-500" />
             {crop.waterNeeds} Water
           </Badge>
-          <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
-            <Clock className="h-3 w-3 text-pocketfarm-gray" />
+          <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
+            <Clock className="h-3 w-3 text-muted-foreground" />
             {crop.growing_conditions}
           </Badge>
         </div>
 
         <p className="text-sm line-clamp-3">{crop.description}</p>
 
-        <div className="flex items-center gap-1 text-xs text-pocketfarm-gray">
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <CalendarDays className="h-3 w-3" />
           <span>Harvest: {crop.planting_info}</span>
         </div>
@@ -141,7 +141,7 @@ const CropCard: React.FC<CropCardProps> = ({
                 e.stopPropagation();
                 onSelectCompanion?.(crop.companion_crops);
               }}
-              className="text-pocketfarm-primary hover:underline"
+              className="text-primary hover:underline"
             >
               {crop.companion_crops.join(', ')}
             </button>
@@ -152,7 +152,7 @@ const CropCard: React.FC<CropCardProps> = ({
         <div className="flex items-center justify-between mt-2">
           <Button
             variant="ghost"
-            className="text-pocketfarm-primary flex items-center gap-1 text-sm"
+            className="text-primary flex items-center gap-1 text-sm"
             onClick={() => setShowMore(!showMore)}
           >
             {showMore ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -161,7 +161,7 @@ const CropCard: React.FC<CropCardProps> = ({
           {isInGarden && hasSchedule && (
             <Button
               variant="ghost"
-              className="text-pocketfarm-primary flex items-center gap-1 text-sm"
+              className="text-primary flex items-center gap-1 text-sm"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -175,7 +175,7 @@ const CropCard: React.FC<CropCardProps> = ({
         </div>
 
         {showMore && (
-          <div className="mt-3 p-2 bg-gray-100 rounded-lg text-xs space-y-2">
+          <div className="mt-3 p-2 bg-muted rounded-lg text-xs space-y-2">
             <p><b>Origin:</b> {crop.origin}</p>
             <p><b>Care Instructions:</b> {crop.care_instructions}</p>
             <p><b>Storage Info:</b> {crop.storage_info}</p>
@@ -189,8 +189,8 @@ const CropCard: React.FC<CropCardProps> = ({
         <div className="w-full flex justify-center">
           {isInGarden ? (
             <Button
-              variant="outline"
-              className="w-full bg-red-500 text-white hover:bg-red-600"
+              variant="destructive"
+              className="w-full"
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemoveFromGarden();
@@ -200,7 +200,7 @@ const CropCard: React.FC<CropCardProps> = ({
             </Button>
           ) : (
             <Button
-              className="w-full bg-pocketfarm-primary hover:bg-pocketfarm-dark"
+              className="w-full"
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToGarden();

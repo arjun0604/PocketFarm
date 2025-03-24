@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Home, Search, MapPin, Droplets, User, Phone, Mail, MapPinIcon, History, Trophy } from 'lucide-react';
+import { Home, Search, MapPin, Droplets, User, Phone, Mail, MapPinIcon, History, Trophy, AlertTriangle } from 'lucide-react';
 import { getUserLocation } from '@/utils/locationUtils';
 import { toast } from 'sonner';
 import { useGarden } from '@/context/GardenContext';
@@ -14,13 +14,15 @@ import { Crop } from '@/utils/types/cropTypes';
 import axios from 'axios';
 import { format } from 'date-fns';
 import Header from '@/components/Header';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 interface CompletedCrop extends Crop {
   completedDate: string;
 }
 
 const UserProfile: React.FC = () => {
-  const { user, isAuthenticated, updateUserProfile, logout } = useAuth();
+  const { user, isAuthenticated, updateUserProfile, logout, deleteAccount } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,6 +31,10 @@ const UserProfile: React.FC = () => {
   const [cropDetails, setCropDetails] = useState<Crop[]>([]);
   const [completedCrops, setCompletedCrops] = useState<CompletedCrop[]>([]);
   const location = getUserLocation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
+  const { goBack } = useNavigationHistory();
   
   useEffect(() => {
     if (user) {
@@ -129,15 +135,34 @@ const UserProfile: React.FC = () => {
     toast.info('You have been logged out');
   };
   
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+      toast.success('Your account has been deleted successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      toast.error('Failed to delete account. Please try again.');
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+  
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      <Header title="User Profile" />
+    <div className="min-h-screen bg-background pb-16">
+      <Header 
+        title="User Profile" 
+        showBackButton
+        onBackClick={goBack}
+      />
       
       <main className="container mx-auto px-4 py-6">
         <div className="grid gap-6">
-          <Card className="border-pocketfarm-secondary/30">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-pocketfarm-primary flex items-center gap-2">
+              <CardTitle className="text-xl text-primary flex items-center gap-2">
                 <User className="h-5 w-5" />
                 Your Profile
               </CardTitle>
@@ -178,28 +203,28 @@ const UserProfile: React.FC = () => {
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <User className="h-5 w-5 text-pocketfarm-gray mt-0.5" />
+                    <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <h3 className="font-medium">Name</h3>
                       <p>{user?.name || 'Not set'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-pocketfarm-gray mt-0.5" />
+                    <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <h3 className="font-medium">Email</h3>
                       <p>{user?.email || 'Not set'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-pocketfarm-gray mt-0.5" />
+                    <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <h3 className="font-medium">Phone</h3>
                       <p>{user?.phone || 'Not set'}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <MapPinIcon className="h-5 w-5 text-pocketfarm-gray mt-0.5" />
+                    <MapPinIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <h3 className="font-medium">Location</h3>
                       <p>
@@ -224,7 +249,6 @@ const UserProfile: React.FC = () => {
                     Cancel
                   </Button>
                   <Button 
-                    className="bg-pocketfarm-primary hover:bg-pocketfarm-dark"
                     onClick={handleSaveProfile}
                   >
                     Save Changes
@@ -239,7 +263,6 @@ const UserProfile: React.FC = () => {
                     Logout
                   </Button>
                   <Button 
-                    className="bg-pocketfarm-primary hover:bg-pocketfarm-dark"
                     onClick={() => setIsEditing(true)}
                   >
                     Edit Profile
@@ -249,9 +272,9 @@ const UserProfile: React.FC = () => {
             </CardFooter>
           </Card>
           
-          <Card className="border-pocketfarm-secondary/30">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-xl text-pocketfarm-primary flex items-center gap-2">
+              <CardTitle className="text-xl text-primary flex items-center gap-2">
                 <History className="h-5 w-5" />
                 Crop History
               </CardTitle>
@@ -263,13 +286,13 @@ const UserProfile: React.FC = () => {
               {completedCrops.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {completedCrops.map((crop) => (
-                    <div key={crop.id} className="flex items-center gap-3 p-3 border rounded-md bg-green-50">
-                      <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Trophy className="h-5 w-5 text-green-600" />
+                    <div key={crop.id} className="flex items-center gap-3 p-3 border rounded-md bg-green-50 dark:bg-green-950/30">
+                      <div className="h-10 w-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                        <Trophy className="h-5 w-5 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
                         <h3 className="font-medium">{crop.name}</h3>
-                        <p className="text-sm text-green-600">
+                        <p className="text-sm text-green-600 dark:text-green-400">
                           Harvested on {format(new Date(crop.completedDate), 'MMM dd, yyyy')}
                         </p>
                       </div>
@@ -279,7 +302,7 @@ const UserProfile: React.FC = () => {
               ) : (
                 <div className="text-center py-6">
                   <p className="mb-2">No completed crops yet</p>
-                  <p className="text-sm text-pocketfarm-gray mb-4">Your crops will appear here once they're ready to harvest</p>
+                  <p className="text-sm text-muted-foreground mb-4">Your crops will appear here once they're ready to harvest</p>
                   <Button asChild>
                     <Link to="/crop-library">Browse Crops</Link>
                   </Button>
@@ -306,7 +329,7 @@ const UserProfile: React.FC = () => {
                       />
                       <div>
                         <h3 className="font-medium">{crop.name}</h3>
-                        <p className="text-sm text-pocketfarm-gray">
+                        <p className="text-sm text-muted-foreground">
                           {crop.waterNeeds} water • {crop.sunlight} sun
                         </p>
                       </div>
@@ -314,7 +337,7 @@ const UserProfile: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-pocketfarm-gray">No crops in your garden yet</p>
+                <p className="text-muted-foreground">No crops in your garden yet</p>
               )}
             </CardContent>
             <CardFooter>
@@ -322,6 +345,51 @@ const UserProfile: React.FC = () => {
                 <Button className="w-full">View Full Garden</Button>
               </Link>
             </CardFooter>
+          </Card>
+          
+          {/* Add Danger Zone Card */}
+          <Card className="border-red-300">
+            <CardHeader>
+              <CardTitle className="text-xl text-red-600 flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Danger Zone
+              </CardTitle>
+              <CardDescription>
+                Actions that cannot be undone
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-500 mb-4">
+                Deleting your account will remove all your personal information and data from our system. This action cannot be undone.
+              </p>
+              <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">
+                    Delete My Account
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete Account</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to delete your account? This action cannot be undone and all your personal data, crops, and watering schedules will be permanently removed.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      onClick={handleDeleteAccount}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? 'Deleting...' : 'Yes, Delete My Account'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
           </Card>
         </div>
       </main>

@@ -10,6 +10,7 @@ import { Crop } from '@/utils/types/cropTypes';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import axios from 'axios';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 const CropDetails: React.FC = () => {
   const { cropName } = useParams<{ cropName: string }>();
@@ -19,6 +20,7 @@ const CropDetails: React.FC = () => {
   const [crop, setCrop] = useState<Crop | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
+  const { goBack } = useNavigationHistory();
 
   useEffect(() => {
     const fetchCropDetails = async () => {
@@ -44,11 +46,11 @@ const CropDetails: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Header 
           title="Crop Details" 
           showBackButton 
-          onBackClick={() => navigate(-1)}
+          onBackClick={goBack}
         />
         <main className="container mx-auto px-4 py-8">
           <div className="text-center">Loading...</div>
@@ -59,11 +61,11 @@ const CropDetails: React.FC = () => {
 
   if (!crop) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Header 
           title="Crop Details" 
           showBackButton 
-          onBackClick={() => navigate(-1)}
+          onBackClick={goBack}
         />
         <main className="container mx-auto px-4 py-8">
           <div className="text-center">Crop not found</div>
@@ -95,15 +97,15 @@ const CropDetails: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header 
         title="Crop Details" 
         showBackButton 
-        onBackClick={() => navigate(-1)}
+        onBackClick={goBack}
       />
       
       <main className="container mx-auto px-4 py-8">
-        <Card className="border-pocketfarm-secondary/30">
+        <Card>
           {/* Crop Image */}
           <div className="aspect-video w-full overflow-hidden rounded-t-lg">
             <img 
@@ -114,23 +116,23 @@ const CropDetails: React.FC = () => {
           </div>
 
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-pocketfarm-primary">{crop.name}</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-primary">{crop.name}</CardTitle>
             <CardDescription className="text-sm italic">{crop.scientific_name}</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6">
             {/* Essential Crop Details */}
             <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
-                <Sun className="h-4 w-4 text-pocketfarm-accent" />
+              <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
+                <Sun className="h-4 w-4 text-yellow-500" />
                 {crop.sunlight} Sun
               </Badge>
-              <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
+              <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
                 <Droplets className="h-4 w-4 text-blue-500" />
                 {crop.waterNeeds} Water
               </Badge>
-              <Badge variant="outline" className="flex items-center gap-1 bg-pocketfarm-light">
-                <Clock className="h-4 w-4 text-pocketfarm-gray" />
+              <Badge variant="outline" className="flex items-center gap-1 bg-muted/50">
+                <Clock className="h-4 w-4 text-muted-foreground" />
                 {crop.growing_conditions}
               </Badge>
             </div>
@@ -138,24 +140,24 @@ const CropDetails: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold mb-2">Description</h3>
-                <p className="text-sm text-pocketfarm-gray">{crop.description}</p>
+                <p className="text-sm text-muted-foreground">{crop.description}</p>
               </div>
 
               <div>
                 <h3 className="font-semibold mb-2">Planting Information</h3>
-                <p className="text-sm text-pocketfarm-gray">{crop.planting_info}</p>
+                <p className="text-sm text-muted-foreground">{crop.planting_info}</p>
               </div>
 
               {crop.companion_crops && crop.companion_crops.length > 0 && (
                 <div>
                   <h3 className="font-semibold mb-2">Companion Plants</h3>
-                  <p className="text-sm text-pocketfarm-gray">{crop.companion_crops.join(', ')}</p>
+                  <p className="text-sm text-muted-foreground">{crop.companion_crops.join(', ')}</p>
                 </div>
               )}
 
               <Button
                 variant="ghost"
-                className="text-pocketfarm-primary flex items-center gap-1 text-sm"
+                className="text-primary flex items-center gap-1 text-sm"
                 onClick={() => setShowMore(!showMore)}
               >
                 {showMore ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -166,27 +168,27 @@ const CropDetails: React.FC = () => {
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold mb-2">Origin</h3>
-                    <p className="text-sm text-pocketfarm-gray">{crop.origin}</p>
+                    <p className="text-sm text-muted-foreground">{crop.origin}</p>
                   </div>
 
                   <div>
                     <h3 className="font-semibold mb-2">Care Instructions</h3>
-                    <p className="text-sm text-pocketfarm-gray">{crop.care_instructions}</p>
+                    <p className="text-sm text-muted-foreground">{crop.care_instructions}</p>
                   </div>
 
                   <div>
                     <h3 className="font-semibold mb-2">Storage Information</h3>
-                    <p className="text-sm text-pocketfarm-gray">{crop.storage_info}</p>
+                    <p className="text-sm text-muted-foreground">{crop.storage_info}</p>
                   </div>
 
                   <div>
                     <h3 className="font-semibold mb-2">Nutritional Information</h3>
-                    <p className="text-sm text-pocketfarm-gray">{crop.nutritional_info}</p>
+                    <p className="text-sm text-muted-foreground">{crop.nutritional_info}</p>
                   </div>
 
                   <div>
                     <h3 className="font-semibold mb-2">Culinary Uses</h3>
-                    <p className="text-sm text-pocketfarm-gray">{crop.culinary_info}</p>
+                    <p className="text-sm text-muted-foreground">{crop.culinary_info}</p>
                   </div>
                 </div>
               )}
@@ -203,7 +205,7 @@ const CropDetails: React.FC = () => {
                 </Button>
               ) : (
                 <Button
-                  className="w-full bg-pocketfarm-primary hover:bg-pocketfarm-dark"
+                  className="w-full"
                   onClick={handleAddToGarden}
                 >
                   Add to My Garden

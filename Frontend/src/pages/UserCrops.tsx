@@ -14,6 +14,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Calendar } from '@/components/ui/calendar';
 import Header from '@/components/Header';
+import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 interface UserCropSchedule {
   id: number;
@@ -44,6 +45,7 @@ const UserCrops: React.FC = () => {
   const [selectedCrop, setSelectedCrop] = useState<UserCropSchedule | null>(null);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { goBack } = useNavigationHistory();
 
   // Fetch user's crop schedules
   const { data: cropSchedules, isLoading: isLoadingSchedules } = useQuery({
@@ -189,11 +191,11 @@ const UserCrops: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-background pb-16">
       <Header 
         title="My Garden" 
         showBackButton={true} 
-        onBackClick={() => navigate(-1)}
+        onBackClick={goBack}
         notifications={notifications}
       />
       
@@ -235,7 +237,7 @@ const UserCrops: React.FC = () => {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sprout className="h-5 w-5 text-green-600" />
+              <Sprout className="h-5 w-5 text-green-600 dark:text-green-400" />
               {selectedCrop?.name} Schedule
             </DialogTitle>
             <DialogDescription>
@@ -246,28 +248,28 @@ const UserCrops: React.FC = () => {
           {selectedCrop && (
             <div className="space-y-6 py-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-semibold mb-2 text-blue-700">Growing Time</h4>
-                  <p className="text-blue-900">{selectedCrop.growing_time} days</p>
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/50 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-blue-700 dark:text-blue-300">Growing Time</h4>
+                  <p className="text-blue-900 dark:text-blue-100">{selectedCrop.growing_time} days</p>
                 </div>
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-semibold mb-2 text-green-700">Watering Frequency</h4>
-                  <p className="text-green-900">Every {selectedCrop.watering_frequency} days</p>
+                <div className="p-4 bg-green-50 dark:bg-green-950/50 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-green-700 dark:text-green-300">Watering Frequency</h4>
+                  <p className="text-green-900 dark:text-green-100">Every {selectedCrop.watering_frequency} days</p>
                 </div>
-                <div className="p-4 bg-purple-50 rounded-lg">
-                  <h4 className="font-semibold mb-2 text-purple-700">Fertilization Schedule</h4>
-                  <p className="text-purple-900">Every {selectedCrop.fertilization_schedule} days</p>
+                <div className="p-4 bg-purple-50 dark:bg-purple-950/50 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-purple-700 dark:text-purple-300">Fertilization Schedule</h4>
+                  <p className="text-purple-900 dark:text-purple-100">Every {selectedCrop.fertilization_schedule} days</p>
                 </div>
-                <div className="p-4 bg-yellow-50 rounded-lg">
-                  <h4 className="font-semibold mb-2 text-yellow-700">Next Watering</h4>
-                  <p className="text-yellow-900">
+                <div className="p-4 bg-yellow-50 dark:bg-yellow-950/50 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-yellow-700 dark:text-yellow-300">Next Watering</h4>
+                  <p className="text-yellow-900 dark:text-yellow-100">
                     {selectedCrop.next_watering ? format(parseISO(selectedCrop.next_watering), 'MMM dd, yyyy') : 'Not scheduled'}
                   </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border rounded-lg p-4 bg-white">
+                <div className="border rounded-lg p-4 bg-card">
                   <h4 className="font-semibold mb-4 text-center">Calendar</h4>
                   <Calendar
                     mode="single"
@@ -284,25 +286,25 @@ const UserCrops: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-muted rounded-lg p-4">
                     <h4 className="font-semibold mb-2">Legend</h4>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-blue-100 rounded"></div>
+                        <div className="w-4 h-4 bg-blue-100 dark:bg-blue-800 rounded"></div>
                         <span>Watering Days</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-purple-100 rounded"></div>
+                        <div className="w-4 h-4 bg-purple-100 dark:bg-purple-800 rounded"></div>
                         <span>Fertilization Days</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-green-100 rounded"></div>
+                        <div className="w-4 h-4 bg-green-100 dark:bg-green-800 rounded"></div>
                         <span>Next Watering</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-muted rounded-lg p-4">
                     <h4 className="font-semibold mb-2">Growing Timeline</h4>
                     <div className="space-y-2">
                       <p>• Plant started: {selectedCrop.last_watered ? format(parseISO(selectedCrop.last_watered), 'MMM dd, yyyy') : 'Not started'}</p>

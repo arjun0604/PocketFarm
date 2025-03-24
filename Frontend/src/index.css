@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,13 +36,13 @@
   }
 
   .dark {
-    --background: 120 10% 7%;
+    --background: 220 10% 10%;
     --foreground: 0 0% 98%;
 
-    --card: 120 10% 10%;
+    --card: 222 14% 15%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 120 10% 10%;
+    --popover: 222 14% 15%;
     --popover-foreground: 0 0% 98%;
 
     --primary: 122 39% 49%;
@@ -52,8 +51,8 @@
     --secondary: 120 29% 30%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 120 5% 20%;
-    --muted-foreground: 120 5% 65%;
+    --muted: 223 14% 20%;
+    --muted-foreground: 210 10% 70%;
 
     --accent: 43 100% 50%;
     --accent-foreground: 0 0% 98%;
@@ -61,8 +60,8 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 120 5% 25%;
-    --input: 120 5% 25%;
+    --border: 217 19% 27%;
+    --input: 217 19% 27%;
     --ring: 122 39% 49%;
   }
 }
@@ -84,22 +83,22 @@
   }
   
   .pocketfarm-card {
-    @apply bg-white rounded-lg shadow-md border border-pocketfarm-secondary/20 overflow-hidden transition-all hover:shadow-lg;
+    @apply bg-card rounded-lg shadow-md border border-border overflow-hidden transition-all hover:shadow-lg;
   }
   
   .pocketfarm-input {
-    @apply w-full px-4 py-2 rounded-md border border-pocketfarm-secondary focus:border-pocketfarm-primary focus:ring-1 focus:ring-pocketfarm-primary outline-none;
+    @apply w-full px-4 py-2 rounded-md border border-input focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-background text-foreground;
   }
   
   .pocketfarm-btn-primary {
-    @apply px-6 py-2 bg-pocketfarm-primary text-white rounded-md font-medium shadow-sm hover:bg-pocketfarm-dark transition-colors;
+    @apply px-6 py-2 bg-primary text-primary-foreground rounded-md font-medium shadow-sm hover:opacity-90 transition-colors;
   }
   
   .pocketfarm-btn-secondary {
-    @apply px-6 py-2 bg-white text-pocketfarm-primary border border-pocketfarm-primary rounded-md font-medium shadow-sm hover:bg-pocketfarm-light transition-colors;
+    @apply px-6 py-2 bg-background text-primary border border-primary rounded-md font-medium shadow-sm hover:bg-muted transition-colors;
   }
   
   .pocketfarm-btn-accent {
-    @apply px-6 py-2 bg-pocketfarm-accent text-white rounded-md font-medium shadow-sm hover:brightness-95 transition-colors;
+    @apply px-6 py-2 bg-accent text-accent-foreground rounded-md font-medium shadow-sm hover:brightness-95 transition-colors;
   }
 }

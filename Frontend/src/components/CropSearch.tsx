@@ -108,7 +108,7 @@ const CropSearch: React.FC<CropSearchProps> = ({ onRemoveFromGarden }) => {
           type="submit"
           variant="default"
           size="icon"
-          className="absolute right-0 top-0 h-full bg-pocketfarm-primary hover:bg-pocketfarm-dark rounded-l-none"
+          className="absolute right-0 top-0 h-full rounded-l-none"
           disabled={isSearching}
         >
           {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
@@ -125,7 +125,7 @@ const CropSearch: React.FC<CropSearchProps> = ({ onRemoveFromGarden }) => {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-pocketfarm-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : searchResults.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -140,7 +140,7 @@ const CropSearch: React.FC<CropSearchProps> = ({ onRemoveFromGarden }) => {
         ) : (
           <div className="text-center py-12">
             <p className="text-lg mb-2">No crops found matching "{searchQuery}"</p>
-            <Button variant="link" onClick={clearSearch} className="text-pocketfarm-primary">
+            <Button variant="link" onClick={clearSearch} className="text-primary">
               Clear search
             </Button>
           </div>
