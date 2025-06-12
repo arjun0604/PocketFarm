@@ -1,6 +1,5 @@
 # 🌱 PocketFarm: Your Smart Farming Companion
 
-![PocketFarm Banner](https://via.placeholder.com/1200x400?text=PocketFarm)
 
 > **Transform Your Farming Experience with Data-Driven Insights and Real-Time Management**
 
