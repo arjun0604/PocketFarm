@@ -46,7 +46,10 @@ const UserCrops: React.FC = () => {
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const queryClient = useQueryClient();
   const { goBack } = useNavigationHistory();
+<<<<<<< HEAD
   const [localWatered, setLocalWatered] = useState<boolean | null>(null);
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 
   // Fetch user's crop schedules
   const { data: cropSchedules, isLoading: isLoadingSchedules } = useQuery({
@@ -114,6 +117,7 @@ const UserCrops: React.FC = () => {
       try {
         const cropDetails = await Promise.all(
           userCrops.map(async (cropName) => {
+<<<<<<< HEAD
             try {
               const response = await axios.get(`http://127.0.0.1:5000/crop/${encodeURIComponent(cropName)}`);
               return response.data;
@@ -128,6 +132,13 @@ const UserCrops: React.FC = () => {
           })
         );
         setCrops(cropDetails.filter(Boolean));
+=======
+            const response = await axios.get(`http://127.0.0.1:5000/crop/${encodeURIComponent(cropName)}`);
+            return response.data;
+          })
+        );
+        setCrops(cropDetails);
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
       } catch (error) {
         console.error('Error fetching crop details:', error);
         toast.error('Failed to load your garden. Please try again later.');
@@ -145,12 +156,15 @@ const UserCrops: React.FC = () => {
     }
   }, [userNotifications]);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (selectedCrop) {
       setLocalWatered(selectedCrop.water_status);
     }
   }, [selectedCrop]);
 
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
   const handleLogout = async () => {
     try {
       await logout();
@@ -189,7 +203,14 @@ const UserCrops: React.FC = () => {
 
   const handleWateringResponse = async () => {
     if (!user || !selectedCrop) return;
+<<<<<<< HEAD
     setLocalWatered((prev) => !prev);
+=======
+    updateWateringMutation.mutate({
+      user_id: Number(user.id),
+      crop_name: selectedCrop.name,
+    });
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
   };
 
   const hasBeenWateredToday = (crop: UserCropSchedule) => {
@@ -330,6 +351,7 @@ const UserCrops: React.FC = () => {
                     <Button 
                       onClick={handleWateringResponse} 
                       className="w-full"
+<<<<<<< HEAD
                       disabled={localWatered === true}
                       variant={localWatered ? "secondary" : "default"}
                     >
@@ -337,6 +359,17 @@ const UserCrops: React.FC = () => {
                       {localWatered
                         ? 'Already Watered'
                         : 'Mark as Watered'}
+=======
+                      disabled={updateWateringMutation.isPending || selectedCrop?.water_status}
+                      variant={selectedCrop?.water_status ? "secondary" : "default"}
+                    >
+                      <Droplets className="h-4 w-4 mr-2" />
+                      {updateWateringMutation.isPending 
+                        ? 'Updating...' 
+                        : selectedCrop?.water_status
+                          ? 'Already Watered Today'
+                          : 'Mark as Watered'}
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                     </Button>
                   </div>
                 </div>

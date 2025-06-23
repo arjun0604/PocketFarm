@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Home, Search, MapPin, LogOut, Bell, ChevronRight, Droplets, CloudRain, Sun, RefreshCw, User } from 'lucide-react';
+<<<<<<< HEAD
 import { getUserLocation, clearStoredLocation, requestLocationPermission, saveUserLocation, Location } from '@/utils/locationUtils';
+=======
+import { getUserLocation, requestLocationPermission, saveUserLocation, Location } from '@/utils/locationUtils';
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 import { Crop } from '@/utils/types/cropTypes';
 import { toast } from 'sonner';
 import CropCard from '@/components/CropCard';
@@ -113,7 +117,10 @@ const Dashboard: React.FC = () => {
   const refreshLocation = async () => {
     setIsLoadingLocation(true);
     try {
+<<<<<<< HEAD
       clearStoredLocation(); // Always clear cache before requesting new location
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
       const location = await requestLocationPermission();
       setUserLocation(location);
 
@@ -211,6 +218,7 @@ const Dashboard: React.FC = () => {
           </div>
           <Card className="w-auto">
             <CardContent className="p-3 flex items-center gap-2">
+<<<<<<< HEAD
               {weatherInfo.icon ? (
                 <img
                   src={`http://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png`}
@@ -218,6 +226,9 @@ const Dashboard: React.FC = () => {
                   className="w-10 h-10"
                 />
               ) : weatherInfo.condition.includes('Rain') ? (
+=======
+              {weatherInfo.condition.includes('Rain') ? (
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                 <CloudRain className="h-5 w-5 text-blue-500" />
               ) : (
                 <Sun className="h-5 w-5 text-yellow-500" />

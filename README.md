@@ -1,9 +1,16 @@
 # 🌱 PocketFarm: Your Smart Farming Companion
 
+<<<<<<< HEAD
 Transform Your Farming Experience with Data-Driven Insights and Real-Time Management
 PocketFarm is a comprehensive farming management system that helps farmers and agricultural enthusiasts manage their crops, track schedules, and optimize their farming operations through intelligent data analysis and real-time monitoring.
 
 ---
+=======
+
+> **Transform Your Farming Experience with Data-Driven Insights and Real-Time Management**
+
+PocketFarm is a comprehensive farming management system that helps farmers and agricultural enthusiasts manage their crops, track schedules, and optimize their farming operations through intelligent data analysis and real-time monitoring.
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 
 ## 🚀 Key Features
 
@@ -32,9 +39,18 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - Weather alerts and warnings
 - Watering reminders
 - Crop care notifications
+<<<<<<< HEAD
 
 ### 👤 User Management
 - Secure user authentication
+=======
+- Email notifications for important updates
+
+### 👤 User Management
+- Secure user authentication
+- Google Sign-in integration
+- Email verification
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 - User profile management
 - Garden library management
 
@@ -44,6 +60,7 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - Maintenance reminders
 - Custom schedule creation
 
+<<<<<<< HEAD
 ---
 
 ## 🛠️ Technical Stack
@@ -54,6 +71,16 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - **APIs:** OpenWeatherMap integration
 
 ---
+=======
+## 🛠️ Technical Stack
+
+- **Backend**: Python Flask with WebSocket support
+- **Frontend**: React.js
+- **Database**: SQLite with WAL mode
+- **AI/ML**: Scikit-learn for crop recommendations
+- **APIs**: OpenWeatherMap integration
+- **Authentication**: Google OAuth and custom email verification
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 
 ## 🚀 Getting Started
 
@@ -65,6 +92,7 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 
 ### Quick Installation
 
+<<<<<<< HEAD
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/arjun0604/PocketFarm.git
@@ -103,6 +131,47 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 
 Create a `.env` file in the `Backend` directory:
 
+=======
+1. Clone the repository:
+```bash
+git clone https://github.com/arjun0604/PocketFarm.git
+cd PocketFarm
+```
+
+2. Set up the backend:
+```bash
+cd Backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+3. Set up the frontend:
+```bash
+cd Frontend
+npm install
+```
+
+### Running the Application
+
+1. Start the backend server:
+```bash
+cd Backend
+python app.py
+```
+
+2. Start the frontend development server:
+```bash
+cd Frontend
+npm start
+```
+
+Visit `http://localhost:3000` to start your smart farming journey!
+
+## 🔧 Configuration
+
+Create a `.env` file in the Backend directory:
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 ```
 FLASK_APP=app.py
 FLASK_ENV=development
@@ -110,9 +179,14 @@ SECRET_KEY=your_secret_key
 OPENWEATHERMAP_API_KEY=your_weather_api_key
 ```
 
+<<<<<<< HEAD
 ---
 
 ## 🤝 Contributing
+=======
+## 🤝 Contributing
+
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 We welcome contributions! Whether you're a farmer, developer, or enthusiast, your input can help make PocketFarm even better.
 
 1. Fork the repository
@@ -121,9 +195,22 @@ We welcome contributions! Whether you're a farmer, developer, or enthusiast, you
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+<<<<<<< HEAD
 ---
 
 ## 📞 Contact
 
 - Email: arjunsanthosh10604@gmail.com
 - Project Link: https://github.com/arjun0604/PocketFarm 
+=======
+
+## 📞 Contact
+
+- **Email**: arjunsanthosh10604@gmail.com
+- **Project Link**: https://github.com/arjun0604/PocketFarm
+
+---
+
+<div align="center">
+</div> 
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2

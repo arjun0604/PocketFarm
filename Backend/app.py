@@ -16,6 +16,11 @@ import logging
 import traceback
 import random
 import sys
+<<<<<<< HEAD
+=======
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 import uuid
 import smtplib
 from email.mime.text import MIMEText
@@ -178,7 +183,11 @@ def create_user_schedule():
             cursor.execute('BEGIN TRANSACTION')
 
             # First check if the crop exists in the crops table
+<<<<<<< HEAD
             cursor.execute("SELECT id FROM crops WHERE name = ? COLLATE NOCASE", (crop_name,))
+=======
+            cursor.execute("SELECT id FROM crops WHERE name = ?", (crop_name,))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             crop = cursor.fetchone()
             if not crop:
                 cursor.execute('ROLLBACK')
@@ -197,7 +206,11 @@ def create_user_schedule():
             cursor.execute('''
                 SELECT ws.id FROM watering_schedules ws
                 JOIN crops c ON ws.crop_id = c.id
+<<<<<<< HEAD
                 WHERE ws.user_id = ? AND c.name = ? COLLATE NOCASE
+=======
+                WHERE ws.user_id = ? AND c.name = ?
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             ''', (user_id, crop_name))
             existing_schedule = cursor.fetchone()
             if existing_schedule:
@@ -209,7 +222,11 @@ def create_user_schedule():
             cursor.execute('''
                 SELECT growing_time, watering_frequency, fertilization_schedule
                 FROM crop_schedule
+<<<<<<< HEAD
                 WHERE crop_name = ? COLLATE NOCASE
+=======
+                WHERE crop_name = ?
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             ''', (crop_name,))
             schedule_data = cursor.fetchone()
             
@@ -263,7 +280,11 @@ def delete_user_schedule(user_id, crop_name):
         cursor.execute('''
             SELECT ws.id FROM watering_schedules ws
             JOIN crops c ON ws.crop_id = c.id
+<<<<<<< HEAD
             WHERE ws.user_id = ? AND c.name = ? COLLATE NOCASE
+=======
+            WHERE ws.user_id = ? AND c.name = ?
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         ''', (user_id, crop_name))
         schedule = cursor.fetchone()
 
@@ -275,7 +296,11 @@ def delete_user_schedule(user_id, crop_name):
         cursor.execute('''
             DELETE FROM watering_schedules
             WHERE user_id = ? AND crop_id IN (
+<<<<<<< HEAD
                 SELECT id FROM crops WHERE name = ? COLLATE NOCASE
+=======
+                SELECT id FROM crops WHERE name = ?
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             )
         ''', (user_id, crop_name))
         conn.commit()
@@ -312,7 +337,11 @@ def update_watering():
             SELECT ws.id, ws.last_watered, ws.watering_frequency
             FROM watering_schedules ws
             JOIN crops c ON ws.crop_id = c.id
+<<<<<<< HEAD
             WHERE ws.user_id = ? AND c.name = ? COLLATE NOCASE
+=======
+            WHERE ws.user_id = ? AND c.name = ?
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         ''', (user_id, crop_name))
         schedule = cursor.fetchone()
 
@@ -717,7 +746,11 @@ def recommend():
         # Fetch details for each recommended crop
         for crop in recommended_crops['Crops']:
             crop_name = crop['Crop']
+<<<<<<< HEAD
             cursor.execute("SELECT * FROM crops WHERE name = ? COLLATE NOCASE", (crop_name,))
+=======
+            cursor.execute("SELECT * FROM crops WHERE name = ?", (crop_name,))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             crop_details = cursor.fetchone()
             if crop_details:
                 detailed_info = {
@@ -772,7 +805,12 @@ def get_crop_details(crop_name):
     try:
         conn = sqlite3.connect('PocketFarm.db')
         cursor = conn.cursor()
+<<<<<<< HEAD
         cursor.execute("SELECT * FROM crops WHERE name = ? COLLATE NOCASE", (crop_name,))
+=======
+        crop_name=crop_name.capitalize()
+        cursor.execute("SELECT * FROM crops WHERE name = ?", (crop_name,))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         crop = cursor.fetchone()
 
         conn.close()
@@ -821,7 +859,11 @@ def add_to_library():
             cursor.execute('BEGIN TRANSACTION')
 
             # Check if the crop exists in the crops table
+<<<<<<< HEAD
             cursor.execute("SELECT id FROM crops WHERE name = ? COLLATE NOCASE", (crop_name,))
+=======
+            cursor.execute("SELECT id FROM crops WHERE name = ?", (crop_name,))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             crop = cursor.fetchone()
             if not crop:
                 cursor.execute('ROLLBACK')
@@ -1005,13 +1047,20 @@ def signup():
             latitude = 9.9312
             longitude = 76.2673
 
+<<<<<<< HEAD
         # Insert the user into the database with email_verified set to 1 (true)
         cursor.execute(
             "INSERT INTO users (name, email, password, phone, location_city, location_state, location_country, location_latitude, location_longitude, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)",
+=======
+        # Insert the user into the database with email_verified set to 0 (false)
+        cursor.execute(
+            "INSERT INTO users (name, email, password, phone, location_city, location_state, location_country, location_latitude, location_longitude, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)",
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             (name, email, hashed_password, phone, city, state, country, latitude, longitude)
         )
         user_id = cursor.lastrowid
         
+<<<<<<< HEAD
         conn.commit()
         
         # Get the newly created user
@@ -1035,6 +1084,45 @@ def signup():
             'message': 'Account created successfully!',
             'email_verified': True
         }), 201
+=======
+        # Generate verification token
+        verification_token = str(uuid.uuid4())
+        expires_at = (datetime.now() + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Save token to database
+        cursor.execute(
+            "INSERT INTO verification_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
+            (user_id, verification_token, expires_at)
+        )
+        
+        conn.commit()
+        conn.close()
+        
+        # Send verification email
+        email_sent = send_verification_email(email, verification_token, user_id)
+        
+        if not email_sent:
+            logger.error(f"Failed to send verification email to {email}")
+        
+        # Return clear message that account requires verification
+        return jsonify({
+            'id': user_id,
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'location': {
+                'city': city,
+                'state': state,
+                'country': country,
+                'latitude': latitude,
+                'longitude': longitude,
+            },
+            'message': 'Account created successfully! Please check your email to verify your account before logging in.',
+            'verification_sent': email_sent,
+            'requires_verification': True,
+            'email_verified': False
+        }), 200
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
     except Exception as e:
         logger.error(f"Signup error: {str(e)}")
         return jsonify({'error': str(e)}), 500
@@ -1064,6 +1152,7 @@ def login():
             return jsonify({'error': 'User not found'}), 404
 
         # Verify the password
+<<<<<<< HEAD
         hashed_password = user['password']
         if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
             return jsonify({'error': 'Invalid password'}), 401
@@ -1083,11 +1172,46 @@ def login():
                 'country': user['location_country'],
                 'latitude': user['location_latitude'],
                 'longitude': user['location_longitude'],
+=======
+        hashed_password = user[3]  # Password is stored in the 4th column
+        if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+            return jsonify({'error': 'Invalid password'}), 401
+            
+        # Check if email is verified
+        email_verified = user[10] if len(user) > 10 else False
+        
+        if not email_verified:
+            return jsonify({
+                'error': 'Email not verified',
+                'user_id': user[0],
+                'email': user[2],
+                'requires_verification': True
+            }), 403
+
+        # Join the user's socket room for weather updates
+        socketio.emit('join_room', {'room': f'user_{user[0]}'})
+
+        # Return the user data including location
+        return jsonify({
+            'id': user[0],
+            'name': user[1],
+            'email': user[2],
+            'phone': user[4] if len(user) > 4 else None,
+            'location': {
+                'city': user[5] if len(user) > 5 else None,
+                'state': user[6] if len(user) > 6 else None,
+                'country': user[7] if len(user) > 7 else None,
+                'latitude': user[8] if len(user) > 8 else None,
+                'longitude': user[9] if len(user) > 9 else None,
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             },
             'email_verified': True
         }), 200
     except Exception as e:
+<<<<<<< HEAD
         logger.error(f"Login error: {str(e)}")
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         return jsonify({'error': str(e)}), 500
 
 @socketio.on('join_room')
@@ -1145,7 +1269,11 @@ def remove_from_garden():
         cursor = conn.cursor()
 
         # Fetch the crop ID
+<<<<<<< HEAD
         cursor.execute("SELECT id FROM crops WHERE name = ? COLLATE NOCASE", (crop_name,))
+=======
+        cursor.execute("SELECT id FROM crops WHERE name = ?", (crop_name,))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         crop = cursor.fetchone()
         if not crop:
             conn.close()
@@ -1277,6 +1405,70 @@ def create_notification(user_id, message):
             print(f"Error creating notification: {str(e)}")
             raise
 
+<<<<<<< HEAD
+=======
+def send_verification_email(to_email, verification_token, user_id):
+    """Send a verification email to the user."""
+    try:
+        # Get email credentials from environment variables
+        email_user = os.getenv('EMAIL_USER')
+        email_password = os.getenv('EMAIL_PASSWORD')
+        
+        if not email_user or not email_password:
+            logger.error("Email credentials are missing. Set EMAIL_USER and EMAIL_PASSWORD in .env file.")
+            return False
+            
+        # Log email credentials (partially hidden)
+        logger.info(f"Using email: {email_user}")
+        
+        # Create verification link with correct port (8081 instead of 8080)
+        verification_link = f"https://localhost:8081/verify-email?token={verification_token}&user_id={user_id}"
+        
+        # Email content
+        subject = "Verify your PocketFarm account"
+        html_content = f"""
+        <html>
+        <body>
+            <h2>Welcome to PocketFarm!</h2>
+            <p>Thank you for signing up. Please verify your email address by clicking the link below:</p>
+            <p><a href="{verification_link}">Verify Email</a></p>
+            <p>If you didn't create this account, you can ignore this email.</p>
+            <p>Best regards,<br>The PocketFarm Team</p>
+        </body>
+        </html>
+        """
+        
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            from email.mime.multipart import MIMEMultipart
+            
+            # Create message
+            message = MIMEMultipart("alternative")
+            message["Subject"] = subject
+            message["From"] = email_user
+            message["To"] = to_email
+            
+            # Add HTML content
+            html_part = MIMEText(html_content, "html")
+            message.attach(html_part)
+            
+            # Connect to Gmail SMTP server
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(email_user, email_password)
+                server.sendmail(email_user, to_email, message.as_string())
+            
+            logger.info(f"Verification email sent to {to_email}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to send email with smtplib: {str(e)}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Error in email sending: {str(e)}")
+        return False
+
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 @app.route('/mark_notifications_read/<int:user_id>', methods=['POST'])
 def mark_notifications_read(user_id):
     try:
@@ -1316,6 +1508,7 @@ def get_users():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+<<<<<<< HEAD
 @app.route('/nurseries', methods=['GET', 'POST'])
 def get_nurseries():
     if request.method == 'GET':
@@ -1437,6 +1630,319 @@ def check_unwatered_crops():
 def start_unwatered_crops_checker():
     # Start the periodic check in a separate thread
     threading.Thread(target=check_unwatered_crops, daemon=True).start()
+=======
+@app.route('/verify-email', methods=['GET'])
+def verify_email():
+    """Verify user's email address."""
+    try:
+        token = request.args.get('token')
+        user_id = request.args.get('user_id')
+        
+        if not token or not user_id:
+            return jsonify({'error': 'Invalid verification link'}), 400
+            
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if the token is valid
+        cursor.execute("""
+            SELECT * FROM verification_tokens 
+            WHERE user_id = ? AND token = ? AND expires_at > datetime('now')
+        """, (user_id, token))
+        verification = cursor.fetchone()
+        
+        if not verification:
+            conn.close()
+            return jsonify({'error': 'Invalid or expired verification link'}), 400
+            
+        # Update user's verification status
+        cursor.execute("""
+            UPDATE users 
+            SET email_verified = 1 
+            WHERE id = ?
+        """, (user_id,))
+        
+        # Delete used token
+        cursor.execute("""
+            DELETE FROM verification_tokens 
+            WHERE user_id = ? AND token = ?
+        """, (user_id, token))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'message': 'Email verified successfully!'}), 200
+    except Exception as e:
+        logger.error(f"Email verification error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/resend-verification', methods=['POST'])
+def resend_verification():
+    """Resend verification email."""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+            
+        logger.info(f"Resending verification email to: {email}")
+            
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if user exists and is not already verified
+        cursor.execute("""
+            SELECT id, email_verified FROM users 
+            WHERE email = ?
+        """, (email,))
+        user = cursor.fetchone()
+        
+        if not user:
+            logger.error(f"User not found for email: {email}")
+            conn.close()
+            return jsonify({'error': 'User not found'}), 404
+            
+        user_id, is_verified = user
+        
+        if is_verified:
+            logger.info(f"Email already verified for: {email}")
+            conn.close()
+            return jsonify({'message': 'Email is already verified'}), 200
+            
+        # Delete any existing tokens
+        cursor.execute("""
+            DELETE FROM verification_tokens 
+            WHERE user_id = ?
+        """, (user_id,))
+        
+        # Generate new verification token
+        verification_token = str(uuid.uuid4())
+        expires_at = (datetime.now() + timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Save token to database
+        cursor.execute("""
+            INSERT INTO verification_tokens (user_id, token, expires_at)
+            VALUES (?, ?, ?)
+        """, (user_id, verification_token, expires_at))
+        
+        conn.commit()
+        conn.close()
+        
+        logger.info(f"Generated new verification token for user: {user_id}")
+        
+        # Send verification email
+        email_sent = send_verification_email(email, verification_token, user_id)
+        
+        if email_sent:
+            logger.info(f"Successfully sent verification email to: {email}")
+            return jsonify({'message': 'Verification email sent successfully!'}), 200
+        else:
+            logger.error(f"Failed to send verification email to: {email}")
+            return jsonify({'error': 'Failed to send verification email. Please check server logs for details.'}), 500
+    except Exception as e:
+        logger.error(f"Resend verification error: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/nurseries', methods=['GET', 'POST'])
+def get_nurseries():
+    try:
+        # Get coordinates from either query parameters (GET) or request body (POST)
+        if request.method == 'POST':
+            data = request.get_json()
+            lat = data.get('latitude')
+            lon = data.get('longitude')
+        else:
+            lat = request.args.get('lat')
+            lon = request.args.get('lon')
+        
+        radius = request.args.get('radius', '50000')  # 50km radius
+
+        if not lat or not lon:
+            return jsonify({'error': 'Latitude and longitude are required'}), 400
+
+        # Use Overpass API to fetch nurseries with expanded search criteria
+        overpass_url = "http://overpass-api.de/api/interpreter"
+        query = f"""
+        [out:json][timeout:25];
+        (
+          // Garden centers and nurseries
+          node["shop"="garden_centre"](around:{radius},{lat},{lon});
+          node["shop"="plant_nursery"](around:{radius},{lat},{lon});
+          node["shop"="agricultural_supplies"](around:{radius},{lat},{lon});
+          node["shop"="agrarian"](around:{radius},{lat},{lon});
+          node["shop"="farm"](around:{radius},{lat},{lon});
+          node["shop"="seeds"](around:{radius},{lat},{lon});
+          node["shop"="fertilizer"](around:{radius},{lat},{lon});
+          
+          // Plant-related amenities
+          node["amenity"="marketplace"]["plant"](around:{radius},{lat},{lon});
+          node["amenity"="garden_centre"](around:{radius},{lat},{lon});
+          node["amenity"="plant_school"](around:{radius},{lat},{lon});
+          node["amenity"="greenhouse"](around:{radius},{lat},{lon});
+          
+          // Additional plant-related businesses
+          node["shop"="florist"]["plant"](around:{radius},{lat},{lon});
+          node["shop"="garden_furniture"](around:{radius},{lat},{lon});
+          node["shop"="landscape"](around:{radius},{lat},{lon});
+        );
+        out body;
+        >;
+        out skel qt;
+        """
+        
+        response = requests.post(overpass_url, data=query)
+        response.raise_for_status()
+        data = response.json()
+
+        # Format the response
+        nurseries = []
+        for element in data.get('elements', []):
+            if 'tags' in element:
+                # Get coordinates from either node or way/relation
+                element_lat = element.get('lat') or element.get('center', {}).get('lat')
+                element_lon = element.get('lon') or element.get('center', {}).get('lon')
+                
+                if element_lat and element_lon:
+                    # Calculate distance using the Haversine formula
+                    R = 6371  # Earth's radius in kilometers
+                    lat1, lon1 = float(lat), float(lon)
+                    lat2, lon2 = float(element_lat), float(element_lon)
+                    
+                    dlat = math.radians(lat2 - lat1)
+                    dlon = math.radians(lon2 - lon1)
+                    a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+                    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+                    distance = R * c
+                    
+                    # Get the name from various possible tags
+                    name = (
+                        element.get('tags', {}).get('name') or
+                        element.get('tags', {}).get('name:en') or
+                        element.get('tags', {}).get('brand') or
+                        element.get('tags', {}).get('shop') or
+                        element.get('tags', {}).get('amenity') or
+                        'Unnamed Garden Center'
+                    )
+                    
+                    # Get basic details first
+                    tags = element.get('tags', {})
+                    phone = tags.get('phone', 'Phone not available')
+                    website = tags.get('website', '')
+                    opening_hours = tags.get('opening_hours', 'Hours not available')
+                    business_type = tags.get('shop') or tags.get('amenity') or 'garden_centre'
+                    
+                    # Initial response with basic address
+                    nursery = {
+                        'id': element.get('id'),
+                        'name': name,
+                        'address': 'Loading address...',  # Initial placeholder
+                        'lat': element_lat,
+                        'lon': element_lon,
+                        'phone': phone,
+                        'website': website,
+                        'opening_hours': opening_hours,
+                        'type': business_type,
+                        'distance': round(distance, 1),
+                        'address_loading': True  # Flag to indicate address is being loaded
+                    }
+                    nurseries.append(nursery)
+
+        # Sort nurseries by distance
+        nurseries.sort(key=lambda x: x['distance'])
+        
+        # Start background thread to update addresses
+        def update_addresses():
+            for nursery in nurseries:
+                try:
+                    # Use our cached_geocode function which handles rate limiting and fallbacks
+                    result = cached_geocode(nursery['lat'], nursery['lon'])
+                    source = result["source"]
+                    geocode_data = result["data"]
+
+                    if source == "openweathermap":
+                        # Extract details from OpenWeatherMap response
+                        city = geocode_data.get('name', 'Unknown City')
+                        state = geocode_data.get('state', 'Unknown State')
+                        country = geocode_data.get('country', 'Unknown Country')
+                        address = f"{city}, {state}, {country}"
+                    else:
+                        # Extract details from Nominatim response
+                        address = geocode_data.get('display_name', 'Address not available')
+
+                    # Update the nursery's address
+                    nursery['address'] = address
+                    nursery['address_loading'] = False
+                except Exception as e:
+                    print(f"Error updating address for nursery {nursery['id']}: {str(e)}")
+                    nursery['address'] = "Address not available"
+                    nursery['address_loading'] = False
+                time.sleep(1)  # Rate limiting between requests
+
+        # Start the background thread
+        threading.Thread(target=update_addresses, daemon=True).start()
+        
+        return jsonify({'nurseries': nurseries}), 200
+        
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Failed to fetch nurseries: {str(e)}'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/clear_notifications/<int:user_id>', methods=['POST'])
+def clear_notifications(user_id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM notifications WHERE user_id = ?", (user_id,))
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'All notifications cleared'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def check_unwatered_crops():
+    """Check for unwatered crops and send notifications."""
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Get all unwatered crops that are due for watering
+        cursor.execute('''
+            SELECT ws.id, ws.user_id, c.name, ws.next_watering
+            FROM watering_schedules ws
+            JOIN crops c ON ws.crop_id = c.id
+            WHERE ws.water_status = 0 
+            AND ws.next_watering <= date('now')
+        ''')
+        unwatered_crops = cursor.fetchall()
+        
+        for crop in unwatered_crops:
+            schedule_id, user_id, crop_name, next_watering = crop
+            
+            # Create notification for unwatered crop
+            notification_message = f"Your {crop_name} needs watering! It was due on {next_watering}."
+            create_notification(user_id, notification_message)
+            
+            # Update next watering to 3 hours from now
+            next_watering = (datetime.now() + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute('''
+                UPDATE watering_schedules
+                SET next_watering = ?
+                WHERE id = ?
+            ''', (next_watering, schedule_id))
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error checking unwatered crops: {str(e)}")
+
+# Start a background thread to check for unwatered crops every 3 hours
+def start_unwatered_crops_checker():
+    while True:
+        check_unwatered_crops()
+        time.sleep(10800)  # Sleep for 3 hours
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 
 def verify_database_schema():
     """Verify that all required tables exist with correct schema."""
@@ -1491,12 +1997,93 @@ def verify_database_schema():
                     print(f"  {col[1]} ({col[2]})")
         
         conn.close()
+<<<<<<< HEAD
         logger.info("Database schema verification complete.")
         return True
     except Exception as e:
         logger.error(f"Database schema verification failed: {str(e)}")
         return False
 
+=======
+        return True
+    except Exception as e:
+        print(f"Error verifying database schema: {str(e)}")
+        return False
+
+@app.route('/google_auth', methods=['POST'])
+def google_auth():
+    """Handle Google OAuth authentication with a simpler flow."""
+    try:
+        data = request.get_json()
+        code = data.get('code')
+        email = data.get('email')
+        name = data.get('name')
+        
+        if not email or not name:
+            return jsonify({'error': 'Email and name are required'}), 400
+            
+        logger.info(f"Google Auth - Processing for email: {email}")
+        
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Check if user exists
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+        
+        if not user:
+            # Create a new user with email verified
+            # Use random password since login is via Google
+            hashed_password = bcrypt.hashpw(os.urandom(16), bcrypt.gensalt())
+            
+            # Get default location for new users (Kochi)
+            city = "Kochi"
+            state = "Kerala"
+            country = "India"
+            latitude = 9.9312
+            longitude = 76.2673
+            
+            cursor.execute(
+                "INSERT INTO users (name, email, password, location_city, location_state, location_country, location_latitude, location_longitude, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)",
+                (name, email, hashed_password, city, state, country, latitude, longitude)
+            )
+            conn.commit()
+            
+            # Get the newly created user
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            user = cursor.fetchone()
+        elif user and len(user) > 10 and user[10] == 0:
+            # If user exists but email not verified, mark as verified now
+            cursor.execute("UPDATE users SET email_verified = 1 WHERE id = ?", (user[0],))
+            conn.commit()
+            
+            # Refresh user data
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            user = cursor.fetchone()
+            
+        conn.close()
+        logger.info(f"Google Auth - Successfully authenticated user: {email}")
+        
+        # Return user data with email_verified flag
+        return jsonify({
+            'id': user[0],
+            'name': user[1],
+            'email': user[2],
+            'phone': user[4] if len(user) > 4 else None,
+            'location': {
+                'city': user[5] if len(user) > 5 else None,
+                'state': user[6] if len(user) > 6 else None,
+                'country': user[7] if len(user) > 7 else None,
+                'latitude': user[8] if len(user) > 8 else None,
+                'longitude': user[9] if len(user) > 9 else None,
+            },
+            'email_verified': True
+        }), 200
+    except Exception as e:
+        logger.error(f"Google auth error: {str(e)}\n{traceback.format_exc()}")
+        return jsonify({'error': str(e)}), 500
+
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
     """Delete a user account and all associated data."""

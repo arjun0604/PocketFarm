@@ -11,7 +11,11 @@ import { Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const AuthForm: React.FC = () => {
+<<<<<<< HEAD
   const { login, signup, isLoading, loginError } = useAuth();
+=======
+  const { login, signup, googleSignIn, isLoading, loginError } = useAuth();
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -121,6 +125,34 @@ const AuthForm: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleGoogleSignIn = async () => {
+    try {
+      // Show toast notification that we're starting the Google Sign-In process
+      toast.info('Starting Google Sign-In process...');
+      
+      await googleSignIn();
+      toast.success('Google sign-in successful!');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error(error);
+      // Show more specific error message based on the error
+      if (error instanceof Error) {
+        if (error.message.includes('not loaded')) {
+          toast.error('Google Sign-In API not loaded yet. Please try again in a moment.');
+        } else if (error.message.includes('client_secret')) {
+          toast.error('Server configuration error. Please contact support.');
+        } else {
+          toast.error(`Google sign-in failed: ${error.message}`);
+        }
+      } else {
+        toast.error('Google sign-in failed. Please try again.');
+      }
+    }
+  };
+
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setEmailError('');
@@ -150,10 +182,17 @@ const AuthForm: React.FC = () => {
               const result = await signup(name, registerEmail, registerPassword, phone || '', location);
               
               // Show success message
+<<<<<<< HEAD
               toast.success('Account created!');
               
               // Redirect to dashboard
               navigate('/dashboard');
+=======
+              toast.success(result.message || 'Account created! Please check your email to verify your account.');
+              
+              // Redirect to verification page
+              navigate('/need-verification', { state: { email: registerEmail } });
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
             } catch (error: any) {
               console.error('Registration error:', error);
               toast.error(error.message || 'Registration failed. Please try again.');
@@ -188,10 +227,17 @@ const AuthForm: React.FC = () => {
       const result = await signup(name, registerEmail, registerPassword, phone || '', location);
       
       // Show success message
+<<<<<<< HEAD
       toast.success('Account created!');
       
       // Redirect to dashboard
       navigate('/dashboard');
+=======
+      toast.success(result.message || 'Account created! Please check your email to verify your account.');
+      
+      // Redirect to verification page
+      navigate('/need-verification', { state: { email: registerEmail } });
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
     } catch (error: any) {
       console.error('Registration error:', error);
       toast.error(error.message || 'Registration failed. Please try again.');
@@ -259,6 +305,35 @@ const AuthForm: React.FC = () => {
                 >
                   {isLoading ? 'Logging in...' : 'Login'}
                 </Button>
+<<<<<<< HEAD
+=======
+                
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+                
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                >
+                  <img 
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                    alt="Google" 
+                    className="h-5 w-5 mr-2"
+                  />
+                  Sign in with Google
+                </Button>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
               </form>
             </TabsContent>
             
@@ -379,6 +454,35 @@ const AuthForm: React.FC = () => {
                 >
                   {isLoading ? 'Creating account...' : 'Create Account'}
                 </Button>
+<<<<<<< HEAD
+=======
+                
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+                
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                >
+                  <img 
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                    alt="Google" 
+                    className="h-5 w-5 mr-2"
+                  />
+                  Sign up with Google
+                </Button>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
               </form>
             </TabsContent>
           </Tabs>

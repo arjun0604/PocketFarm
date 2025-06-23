@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 const config = {
+=======
+
+import type { Config } from "tailwindcss";
+
+export default {
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
@@ -19,9 +26,12 @@ const config = {
 			}
 		},
 		extend: {
+<<<<<<< HEAD
 			fontFamily: {
 				sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
 			},
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -118,5 +128,8 @@ const config = {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+<<<<<<< HEAD
 
 export default config;
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2

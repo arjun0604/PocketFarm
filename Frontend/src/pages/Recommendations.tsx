@@ -35,9 +35,12 @@ const Recommendations: React.FC = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { goBack } = useNavigationHistory();
+<<<<<<< HEAD
   const [activeCompanionCropNames, setActiveCompanionCropNames] = useState<string[] | null>(null);
   const [activeCompanionParent, setActiveCompanionParent] = useState<string | null>(null);
   const [selectedCompanionParent, setSelectedCompanionParent] = useState<Crop | null>(null);
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 
   useEffect(() => {
     const location = getUserLocation();
@@ -174,6 +177,7 @@ const Recommendations: React.FC = () => {
     }
   }, [userNotifications]);
 
+<<<<<<< HEAD
   const handleCompanionCropSelect = async (parentCrop: Crop, companionCropNames: string[]) => {
     // Find which companion crops are missing from companionCrops
     const missingNames = companionCropNames.filter(
@@ -197,6 +201,10 @@ const Recommendations: React.FC = () => {
       setCompanionCrops(prev => [...prev, ...newCompanions]);
     }
     setSelectedCompanionParent({ ...parentCrop, companion_crops: companionCropNames });
+=======
+  const handleCompanionCropSelect = (crop: Crop, companionCropNames: string[]) => {
+    setSelectedCrop(crop);
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
   };
 
   if (!isAuthenticated) {
@@ -233,14 +241,22 @@ const Recommendations: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {crops.slice(0, visibleCrops).map((crop) => (
+<<<<<<< HEAD
                     <React.Fragment key={crop.id}>
+=======
+                    <div key={crop.id}>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                       <CropCard
                         crop={crop}
                         onAddToGarden={() => handleAddToGarden(crop)}
                         onRemoveFromGarden={() => removeCropFromGarden(crop.name)}
                         onSelectCompanion={(companionCropNames) => handleCompanionCropSelect(crop, companionCropNames)}
                       />
+<<<<<<< HEAD
                     </React.Fragment>
+=======
+                    </div>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                   ))}
                 </div>
                 {visibleCrops < crops.length && (
@@ -263,6 +279,7 @@ const Recommendations: React.FC = () => {
         )}
       </main>
 
+<<<<<<< HEAD
       {/* Hovering Window for Companion Crops (toggle or link click) */}
       {(selectedCompanionParent && selectedCompanionParent.companion_crops && selectedCompanionParent.companion_crops.length > 0) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -270,12 +287,25 @@ const Recommendations: React.FC = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Companion Plants for {selectedCompanionParent.name}</h3>
               <Button variant="ghost" size="icon" onClick={() => setSelectedCompanionParent(null)}>
+=======
+      {/* Hovering Window for Companion Crops */}
+      {selectedCrop && selectedCrop.companion_crops && selectedCrop.companion_crops.length > 0 && wantCompanion && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Companion Plants for {selectedCrop.name}</h3>
+              <Button variant="ghost" size="icon" onClick={() => setSelectedCrop(null)}>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                 <X className="h-4 w-4" />
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {companionCrops
+<<<<<<< HEAD
                 .filter(crop => selectedCompanionParent.companion_crops.includes(crop.name))
+=======
+                .filter(crop => selectedCrop.companion_crops.includes(crop.name))
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                 .map((crop) => (
                   <CropCard
                     key={crop.id}

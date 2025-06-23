@@ -136,6 +136,7 @@ const CropCard: React.FC<CropCardProps> = ({
         {crop.companion_crops && crop.companion_crops.length > 0 && (
           <div className="text-xs">
             <span className="font-medium">Companion plants: </span>
+<<<<<<< HEAD
             {onSelectCompanion ? (
               crop.companion_crops.map((name, idx) => (
                 <React.Fragment key={name}>
@@ -154,6 +155,17 @@ const CropCard: React.FC<CropCardProps> = ({
             ) : (
               <span>{crop.companion_crops.join(', ')}</span>
             )}
+=======
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectCompanion?.(crop.companion_crops);
+              }}
+              className="text-primary hover:underline"
+            >
+              {crop.companion_crops.join(', ')}
+            </button>
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
           </div>
         )}
 

@@ -20,7 +20,10 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const fetchUserCrops = async () => {
       if (user?.id) {
         try {
+<<<<<<< HEAD
           console.log('[GardenContext] Fetching user crops for user id:', user.id);
+=======
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
           const response = await axios.get('http://127.0.0.1:5000/get_user_crops', {
             headers: {
               'Authorization': `Bearer ${user.id}`,
@@ -29,9 +32,13 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
           const crops = response.data;
           setUserCrops(crops);
+<<<<<<< HEAD
           if (Array.isArray(crops) && crops.length === 0) {
             toast.info('Your garden is empty. Add crops to get started!');
           }
+=======
+          
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
           // Create schedules for all crops
           for (const crop of crops) {
             try {
@@ -40,6 +47,7 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 crop_name: crop,
               });
             } catch (error) {
+<<<<<<< HEAD
               console.error(`[GardenContext] Error creating schedule for ${crop}:`, error);
               // Don't show error toast for schedule creation as it's not critical
             }
@@ -51,6 +59,15 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           } else {
             toast.error('Failed to load your garden. Please try again later.');
           }
+=======
+              console.error(`Error creating schedule for ${crop}:`, error);
+              // Don't show error toast for schedule creation as it's not critical
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching user crops:', error);
+          toast.error('Failed to load your garden');
+>>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         }
       }
     };
