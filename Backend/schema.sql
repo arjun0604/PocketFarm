@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    message TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    read_status BOOLEAN DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+); 

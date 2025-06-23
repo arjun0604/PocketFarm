@@ -1,0 +1,78 @@
+Crop,Sunlight,Water Needs,Soil Type,Drainage,Avg Temp,Avg Humidity,Avg Area,Jan,February,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,Terrace/Backyard,Potted,Companion Crop 1,Companion Crop 2
+Tomato,Full,Medium,Loamy,Well-drained,24,70,3,1,1,1,0,0,1,1,0,1,1,1,0,Both,Yes,Basil,Carrot
+Spinach,Partial,High,Loamy,Not Well-drained,17.5,80,2,1,1,1,0,0,0,0,1,1,1,1,1,Both,Yes,Strawberry,Radish
+Okra (Bhindi),Full,Medium,Sandy Loam,Well-drained,30,60,4,0,0,1,1,0,1,1,0,0,0,0,0,Both,Yes,Basil,chilli
+Mint (Pudina),Partial,High,Loamy,Not Well-drained,19,80,1.5,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Cabbage,Tomato
+chilli,Full,Medium,Loamy,Well-drained,25,60,2.5,1,1,1,0,0,1,1,0,1,1,1,0,Both,Yes,Basil,Onion
+Brinjal,Full,Medium,Loamy,Well-drained,27,70,3.5,1,1,1,0,0,1,1,0,1,1,1,0,Both,Yes,Beans,Basil
+Cucumber,Full,High,Sandy Loam,Not Well-drained,27.5,80,4,0,1,1,0,0,1,1,0,0,0,0,0,Both,Yes,Dill,Dill
+Coriander,Partial,Medium,Loamy,Not Well-drained,20,70,1.5,1,1,1,0,0,0,0,1,1,1,1,1,Both,Yes,Carrot,Potato
+Basil (Tulsi),Full,Medium,Sandy Loam,Well-drained,25,60,1.5,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Tomato,Pepper
+Radish,Partial,Medium,Sandy Loam,Not Well-drained,17.5,70,2,0,0,0,0,0,0,0,1,1,1,1,0,Both,Yes,Lettuce,Spinach
+Beans,Full,Medium,Loamy,Well-drained,25,70,3.5,1,1,1,0,0,1,1,0,1,1,1,0,Both,Yes,Corn,Carrot
+Pumpkin,Full,High,Sandy Loam,Not Well-drained,27.5,80,6,0,1,1,0,0,1,1,0,0,0,0,0,Both,Yes,Corn,beans
+Bottle Gourd,Full,High,Sandy Loam,Not Well-drained,27.5,80,6,0,1,1,0,0,1,1,0,0,0,0,0,Both,Yes,Corn,beans
+Fenugreek,Partial,Medium,Loamy,Not Well-drained,17.5,70,1.5,0,0,0,0,0,0,0,0,0,1,1,0,Both,Yes,Potato,Tomato
+Carrot,Partial,Medium,Sandy Loam,Not Well-drained,17.5,70,2,0,0,0,0,0,0,0,1,1,1,1,0,Both,Yes,Onion,Radish
+Lemon,Full,Medium,Loamy,Well-drained,25,60,7.5,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Garlic,Rosemary
+Banana,Full,High,Loamy,Not Well-drained,27.5,80,15,1,1,1,1,1,1,1,1,1,1,1,1,Backyard,No,Peanut,Cowpea
+Papaya,Full,High,Sandy Loam,Not Well-drained,27.5,80,7.5,1,1,1,1,1,1,1,1,1,1,1,1,Backyard,No,Peanut,Cowpea
+Ginger,Partial,High,Loamy,Not Well-drained,25,80,3.5,0,0,0,1,1,0,0,0,0,0,0,0,Both,Yes,Peanut,Cowpea
+Turmeric,Partial,High,Loamy,Not Well-drained,25,80,3.5,0,0,0,1,1,0,0,0,0,0,0,0,Both,Yes,Peanut,Cowpea
+Watermelon,Full,High,Sandy Loam,Not Well-drained,30,65,6,0,0,1,1,1,0,0,0,0,0,0,0,Backyard,No,Corn,beans
+Cauliflower,Partial,Medium,Loamy,Well-drained,20,75,2.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Peas,Carrot
+Zucchini,Full,Medium,Sandy Loam,Well-drained,24,70,4,0,1,1,1,1,1,0,0,0,0,0,0,Both,Yes,Beans,Radish
+Peas,Partial,Medium,Loamy,Well-drained,18,65,2,0,0,0,0,1,1,1,1,0,0,0,0,Both,Yes,Cabbage,Carrot
+Kale,Partial,High,Loamy,Well-drained,22,70,1.5,0,0,0,1,1,1,1,1,0,0,0,0,Both,Yes,Beans,Peas
+Bell Pepper,Full,Medium,Loamy,Well-drained,26,65,3,1,1,1,0,0,1,1,0,1,1,1,0,Both,Yes,Basil,Onion
+Asparagus,Full,Medium,Sandy Loam,Well-drained,20,60,2,0,0,0,0,0,1,1,1,1,0,0,0,Both,Yes,Tomato,Carrot
+Radicchio,Partial,Medium,Loamy,Not Well-drained,18,75,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Beans,Peas
+Chard,Partial,Medium,Loamy,Well-drained,20,70,2,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Garlic,Onion
+Fennel,Full,Medium,Sandy Loam,Well-drained,22,65,2.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Carrot,Peas
+Artichoke,Full,Medium,Loamy,Well-drained,24,70,3,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Beans,Tomato
+Sweet Potato,Full,Medium,Sandy Loam,Well-drained,28,80,4,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Beans,Corn
+Taro,Partial,High,Loamy,Not Well-drained,26,85,5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Peas,Spinach
+Nasturtium,Full,Medium,Loamy,Well-drained,22,70,1,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Cabbage,Radish
+Sage,Full,Medium,Sandy Loam,Well-drained,25,60,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Tomato,Chilli
+Thyme,Full,Low,Sandy Loam,Well-drained,24,50,1,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Tomato,Chilli
+Oregano,Full,Low,Loamy,Well-drained,23,55,1,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Pepper,Tomato
+Lavender,Full,Low,Sandy Loam,Well-drained,26,50,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Thyme,Rosemary
+Chives,Full,Low,Loamy,Well-drained,20,60,1,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Garlic,Onion
+Parsley,Partial,Medium,Loamy,Well-drained,22,70,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Tomato,Carrot
+Borage,Full,Medium,Loamy,Well-drained,24,65,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Cucumber,Strawberry
+Fennel,Full,Medium,Sandy Loam,Well-drained,22,65,2.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Carrot,Peas
+Cabbage,Partial,Medium,Loamy,Well-drained,20,70,2,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Carrot,Onion
+Kohlrabi,Partial,Medium,Loamy,Well-drained,18,70,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Cabbage,beetroot
+Beetroot,Full,Medium,Loamy,Well-drained,20,65,2,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Cabbage,Carrot
+Endive,Partial,Medium,Loamy,Well-drained,19,70,1.5,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Beans,Peas
+Arugula,Full,Medium,Loamy,Well-drained,21,65,1,0,0,0,1,1,1,1,0,0,0,0,0,Both,Yes,Spinach,Radish
+Dill,Full,Medium,"Loamy, Sandy",Well-drained,18,60,1.5,1,1,1,0,0,0,0,0,0,1,1,1,Both,Yes,Cabbage,Lettuce
+Lettuce,Partial,High,Loamy,Well-drained,15,70,2,1,1,1,0,0,0,0,0,0,1,1,1,Both,Both,Both,Radish
+Corn,Full,High,"Loamy, Sandy Loam",Well-drained,25,65,4,0,0,1,1,1,1,0,0,0,0,0,0,Backyard,No,Beans,Pumpkin
+Onion,Full,Medium,Loamy,Well-drained,20,60,2.5,1,0,0,0,0,0,0,0,0,1,1,1,Both,Yes,Carrot,Lettuce
+Garlic,Full,Medium,Loamy,Well-drained,18,55,2,0,0,0,0,0,0,0,0,0,1,1,1,Both,Yes,Tomato,Lettuce
+Peanut,Full,Medium,Sandy Loam,Well-drained,28,50,3,0,0,0,1,1,1,0,0,0,0,0,1,Backyard,No,Corn,Tomato
+Potato,Full,Medium,Loamy,Well-drained,16,70,3.5,0,0,0,0,0,0,,0,0,1,1,1,Both,Yes,Beans,Corn
+Rosemary,Full,Low,"Sandy, Well-drained",Well-drained,20,40,1.5,1,1,1,0,0,0,0,0,0,1,1,1,Both,Yes,Carrot,Cabbage
+Jasmine,Full,Medium,Loamy,Well-drained,25,70,2,1,1,1,1,0,0,0,1,1,1,1,1,Both,Yes,Rose,Bougainvillea
+Bougainvillea,Full,Low,Sandy Loam,Well-drained,30,50,2.5,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Jasmine,Rose
+Spring Onion,Full,Medium,Loamy,Well-drained,20,75,1.5,1,1,1,1,0,0,0,1,1,1,1,1,Both,Yes,Carrot,Lettuce
+Curry Leaves,Full,Medium,Sandy Loam,Well-drained,28,65,3,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Chilli,Basil
+Money Plant,Partial,Medium,Loamy,Well-drained,25,80,2,1,1,1,1,1,1,1,1,1,1,1,1,Balcony,Yes,Snake Plant,Spider Plant
+Garlic,Full,Medium,Sandy Loam,Well-drained,18,60,2,1,1,1,1,0,0,0,1,1,1,1,1,Both,Yes,Onion,Tomato
+Broccoli,Full,High,Loamy,Well-drained,20,70,3,1,1,1,1,0,0,0,1,1,1,1,1,Both,Yes,Spinach,Cauliflower
+Pineapple,Full,Medium,Sandy Loam,Well-drained,27,75,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,No,Banana,Papaya
+Snake Plant,Partial,Low,Loamy,Well-drained,22,50,2,1,1,1,1,1,1,1,1,1,1,1,1,Balcony,Yes,Money Plant,Spider Plant
+Dragon Fruit,Full,Medium,Sandy Loam,Well-drained,26,65,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,Yes,Passion Fruit,Grape
+Spider Plant,Partial,Medium,Loamy,Well-drained,24,70,2,1,1,1,1,1,1,1,1,1,1,1,1,Balcony,Yes,Money Plant,Snake Plant
+Rose,Full,Medium,Loamy,Well-drained,23,60,3,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Jasmine,Bougainvillea
+Guava,Full,Medium,Loamy,Well-drained,28,70,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,No,Lemon,Mango
+Passion Fruit,Full,Medium,Sandy Loam,Well-drained,26,75,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,Yes,Dragon Fruit,Grape
+Grape,Full,Medium,Sandy Loam,Well-drained,27,65,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,No,Passion Fruit,Guava
+Lime,Full,Medium,Sandy Loam,Well-drained,25,70,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,No,Lemon,Guava
+Amla,Full,Medium,Loamy,Well-drained,24,60,4,1,1,1,1,1,1,1,1,1,1,1,1,Terrace,No,Jamun,Lemon
+Basil,Partial,Medium,Loamy,Well-drained,25,65,2,1,1,1,1,0,0,1,1,1,1,1,1,Both,Yes,Tomato,Chilli
+Cowpea,Full,Medium,Loamy,Well-drained,27,70,3,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Beans,Corn
+Jamun,Full,Medium,Sandy Loam,Well-drained,28,75,3.5,1,1,1,0,0,0,1,1,1,1,1,1,Both,Yes,Guava,Mango
+Mango,Full,Medium,Sandy Loam,Well-drained,30,75,4,1,1,1,1,1,1,1,1,1,1,1,1,Both,Yes,Lemon,Papaya
+Strawberry,Partial,High,Loamy,Well-drained,20,80,2,0,0,1,1,1,1,1,1,1,1,0,0,Both,Yes,Lettuce,Carrot
