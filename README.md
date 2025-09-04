@@ -38,7 +38,6 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 
 ### 👤 User Management
 - Secure user authentication
-=======
 - Email notifications for important updates
 
 ### 👤 User Management
@@ -64,15 +63,6 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - **APIs:** OpenWeatherMap integration
 
 ---
-=======
-## 🛠️ Technical Stack
-
-- **Backend**: Python Flask with WebSocket support
-- **Frontend**: React.js
-- **Database**: SQLite with WAL mode
-- **AI/ML**: Scikit-learn for crop recommendations
-- **APIs**: OpenWeatherMap integration
-- **Authentication**: Google OAuth and custom email verification
 
 ## 🚀 Getting Started
 
@@ -122,7 +112,6 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 
 Create a `.env` file in the `Backend` directory:
 
-=======
 1. Clone the repository:
 ```bash
 git clone https://github.com/arjun0604/PocketFarm.git
@@ -170,9 +159,6 @@ OPENWEATHERMAP_API_KEY=your_weather_api_key
 ```
 
 
-
-## 🤝 Contributing
-=======
 ## 🤝 Contributing
 
 We welcome contributions! Whether you're a farmer, developer, or enthusiast, your input can help make PocketFarm even better.
