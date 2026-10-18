@@ -6,6 +6,7 @@ import CropCard from "./CropCard";
 import { Search, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useGarden } from "@/context/GardenContext"; // Import useGarden
+import { API_BASE_URL } from "@/config";
 
 interface CropSearchProps {
   onRemoveFromGarden?: (cropName: string) => Promise<void>;
@@ -28,7 +29,7 @@ const CropSearch: React.FC<CropSearchProps> = ({ onRemoveFromGarden }) => {
     setIsLoading(true);
     try {
       const cropRequests = INITIAL_CROPS.map(async (cropName) => {
-        const response = await fetch(`http://127.0.0.1:5000/crop/${encodeURIComponent(cropName)}`);
+        const response = await fetch(`${API_BASE_URL}/crop/${encodeURIComponent(cropName)}`);
         if (response.ok) {
           return await response.json();
         }
@@ -58,7 +59,7 @@ const CropSearch: React.FC<CropSearchProps> = ({ onRemoveFromGarden }) => {
     setIsSearching(true);
 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/crop/${encodeURIComponent(searchQuery.trim())}`);
+      const response = await fetch(`${API_BASE_URL}/crop/${encodeURIComponent(searchQuery.trim())}`);
       if (response.ok) {
         const data = await response.json();
         setSearchResults([data]);

@@ -6,17 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Home, Search, MapPin, LogOut, Bell, ChevronRight, Droplets, CloudRain, Sun, RefreshCw, User } from 'lucide-react';
-<<<<<<< HEAD
 import { getUserLocation, clearStoredLocation, requestLocationPermission, saveUserLocation, Location } from '@/utils/locationUtils';
-=======
-import { getUserLocation, requestLocationPermission, saveUserLocation, Location } from '@/utils/locationUtils';
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
 import { Crop } from '@/utils/types/cropTypes';
 import { toast } from 'sonner';
 import CropCard from '@/components/CropCard';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import BottomNavigation from '@/components/BottomNavigation';
+import { API_BASE_URL } from '@/config';
 import Header from '@/components/Header';
 
 interface Notification {
@@ -45,7 +42,7 @@ const Dashboard: React.FC = () => {
     queryFn: async () => {
       if (!user) return [];
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/notifications/${Number(user.id)}`);
+        const response = await axios.get(`${API_BASE_URL}/notifications/${Number(user.id)}`);
         return response.data;
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -66,7 +63,7 @@ const Dashboard: React.FC = () => {
     const fetchCropDetails = async () => {
       try {
         const cropDetailsPromises = userCrops.map(async (cropName) => {
-          const response = await fetch(`http://127.0.0.1:5000/crop/${cropName}`);
+          const response = await fetch(`${API_BASE_URL}/crop/${cropName}`);
           if (!response.ok) {
             throw new Error(`Failed to fetch details for ${cropName}`);
           }
@@ -89,7 +86,7 @@ const Dashboard: React.FC = () => {
   // Fetch weather data from the backend
   const fetchWeatherData = async (location: string) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/weather', {
+      const response = await fetch(`${API_BASE_URL}/weather`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,10 +114,7 @@ const Dashboard: React.FC = () => {
   const refreshLocation = async () => {
     setIsLoadingLocation(true);
     try {
-<<<<<<< HEAD
       clearStoredLocation(); // Always clear cache before requesting new location
-=======
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
       const location = await requestLocationPermission();
       setUserLocation(location);
 
@@ -218,7 +212,6 @@ const Dashboard: React.FC = () => {
           </div>
           <Card className="w-auto">
             <CardContent className="p-3 flex items-center gap-2">
-<<<<<<< HEAD
               {weatherInfo.icon ? (
                 <img
                   src={`http://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png`}
@@ -226,9 +219,6 @@ const Dashboard: React.FC = () => {
                   className="w-10 h-10"
                 />
               ) : weatherInfo.condition.includes('Rain') ? (
-=======
-              {weatherInfo.condition.includes('Rain') ? (
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                 <CloudRain className="h-5 w-5 text-blue-500" />
               ) : (
                 <Sun className="h-5 w-5 text-yellow-500" />

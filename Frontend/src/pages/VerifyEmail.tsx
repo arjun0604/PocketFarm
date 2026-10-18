@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { API_BASE_URL } from '@/config';
 
 const VerifyEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -23,7 +24,7 @@ const VerifyEmail: React.FC = () => {
         }
 
         // Call the API to verify the email
-        const response = await fetch(`http://127.0.0.1:5000/verify-email?token=${token}&user_id=${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/verify-email?token=${token}&user_id=${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

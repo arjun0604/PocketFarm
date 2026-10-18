@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Mail, RefreshCw } from 'lucide-react';
+import { API_BASE_URL } from '@/config';
 
 const NeedVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const NeedVerification: React.FC = () => {
     setIsResending(true);
     
     try {
-      const response = await fetch('http://127.0.0.1:5000/resend-verification', {
+      const response = await fetch(`${API_BASE_URL}/resend-verification`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

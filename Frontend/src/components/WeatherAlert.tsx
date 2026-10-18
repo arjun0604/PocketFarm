@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { toast } from 'sonner';
 import { AlertCircle, Cloud, Droplets, Thermometer, Wind, Clock } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { SOCKET_URL } from '@/config';
 
 interface WeatherAlert {
   type: string;
@@ -39,7 +40,7 @@ const WeatherAlert: React.FC = () => {
     if (!user) return;
 
     // Initialize socket connection
-    const newSocket = io('http://127.0.0.1:5000');
+    const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
 
     // Request notification permission

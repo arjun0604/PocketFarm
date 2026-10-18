@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '@/config';
 
 interface GardenContextType {
   userCrops: string[];
@@ -20,11 +21,8 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const fetchUserCrops = async () => {
       if (user?.id) {
         try {
-<<<<<<< HEAD
           console.log('[GardenContext] Fetching user crops for user id:', user.id);
-=======
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
-          const response = await axios.get('http://127.0.0.1:5000/get_user_crops', {
+          const response = await axios.get(`${API_BASE_URL}/get_user_crops`, {
             headers: {
               'Authorization': `Bearer ${user.id}`,
             },
@@ -32,22 +30,17 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
           const crops = response.data;
           setUserCrops(crops);
-<<<<<<< HEAD
           if (Array.isArray(crops) && crops.length === 0) {
             toast.info('Your garden is empty. Add crops to get started!');
           }
-=======
-          
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
           // Create schedules for all crops
           for (const crop of crops) {
             try {
-              await axios.post('http://127.0.0.1:5000/user_schedule', {
+              await axios.post(`${API_BASE_URL}/user_schedule`, {
                 user_id: Number(user.id),
                 crop_name: crop,
               });
             } catch (error) {
-<<<<<<< HEAD
               console.error(`[GardenContext] Error creating schedule for ${crop}:`, error);
               // Don't show error toast for schedule creation as it's not critical
             }
@@ -59,15 +52,6 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           } else {
             toast.error('Failed to load your garden. Please try again later.');
           }
-=======
-              console.error(`Error creating schedule for ${crop}:`, error);
-              // Don't show error toast for schedule creation as it's not critical
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching user crops:', error);
-          toast.error('Failed to load your garden');
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
         }
       }
     };
@@ -83,7 +67,7 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     try {
       // Add crop to garden
-      const response = await axios.post('http://127.0.0.1:5000/add_to_library', {
+      const response = await axios.post(`${API_BASE_URL}/add_to_library`, {
         user_id: Number(user.id),
         crop_name: cropName,
       });
@@ -91,7 +75,7 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (response.status === 200) {
         // Create schedule for the new crop
         try {
-          await axios.post('http://127.0.0.1:5000/user_schedule', {
+          await axios.post(`${API_BASE_URL}/user_schedule`, {
             user_id: Number(user.id),
             crop_name: cropName,
           });
@@ -120,7 +104,7 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     try {
       // Remove crop from garden
-      const response = await axios.post('http://127.0.0.1:5000/remove_from_garden', {
+      const response = await axios.post(`${API_BASE_URL}/remove_from_garden`, {
         user_id: Number(user.id),
         crop_name: cropName,
       });
@@ -128,7 +112,7 @@ export const GardenProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (response.status === 200) {
         // Try to delete schedule for the removed crop, but don't fail if it doesn't exist
         try {
-          await axios.delete(`http://127.0.0.1:5000/user_schedule/${Number(user.id)}/${cropName}`);
+          await axios.delete(`${API_BASE_URL}/user_schedule/${Number(user.id)}/${cropName}`);
         } catch (error: any) {
           // Only log the error if it's not a 404 (schedule not found)
           if (error.response?.status !== 404) {

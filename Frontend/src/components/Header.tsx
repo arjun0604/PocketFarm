@@ -9,6 +9,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { API_BASE_URL } from '@/config';
 
 interface Notification {
   id: number;
@@ -39,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
   const handleNotificationDialogOpen = async () => {
     if (user && unreadNotifications > 0) {
       try {
-        await axios.post(`http://127.0.0.1:5000/mark_notifications_read/${user.id}`);
+        await axios.post(`${API_BASE_URL}/mark_notifications_read/${user.id}`);
         // Invalidate and refetch notifications instead of reloading the page
         queryClient.invalidateQueries({ queryKey: ['userNotifications', user.id] });
       } catch (error) {
@@ -118,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({
                       onClick={async () => {
                         if (user) {
                           try {
-                            await axios.post(`http://127.0.0.1:5000/clear_notifications/${user.id}`);
+                            await axios.post(`${API_BASE_URL}/clear_notifications/${user.id}`);
                             queryClient.invalidateQueries({ queryKey: ['userNotifications', user.id] });
                             toast.success('All notifications cleared');
                           } catch (error) {

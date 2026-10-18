@@ -1,12 +1,8 @@
 # 🌱 PocketFarm: Your Smart Farming Companion
 
-Transform Your Farming Experience with Data-Driven Insights and Real-Time Management
-PocketFarm is a comprehensive farming management system that helps farmers and agricultural enthusiasts manage their crops, track schedules, and optimize their farming operations through intelligent data analysis and real-time monitoring.
-
-
 > **Transform Your Farming Experience with Data-Driven Insights and Real-Time Management**
-
-PocketFarm is a comprehensive farming management system that helps farmers and agricultural enthusiasts manage their crops, track schedules, and optimize their farming operations through intelligent data analysis and real-time monitoring.
+>
+> PocketFarm is a comprehensive farming management system that helps farmers and agricultural enthusiasts manage their crops, track schedules, and optimize their farming operations through intelligent data analysis and real-time monitoring.
 
 ## 🚀 Key Features
 
@@ -38,10 +34,6 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 
 ### 👤 User Management
 - Secure user authentication
-- Email notifications for important updates
-
-### 👤 User Management
-- Secure user authentication
 - Google Sign-in integration
 - Email verification
 - User profile management
@@ -53,16 +45,14 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - Maintenance reminders
 - Custom schedule creation
 
----
-
 ## 🛠️ Technical Stack
-- **Backend:** Python Flask with WebSocket support
-- **Frontend:** React.js
-- **Database:** SQLite with WAL mode (`PocketFarm/Backend/PocketFarm.db`)
-- **AI/ML:** Scikit-learn for crop recommendations
-- **APIs:** OpenWeatherMap integration
 
----
+- **Backend**: Python Flask with WebSocket support
+- **Frontend**: React.js
+- **Database**: SQLite with WAL mode
+- **AI/ML**: Scikit-learn for crop recommendations
+- **APIs**: OpenWeatherMap integration
+- **Authentication**: Google OAuth and custom email verification
 
 ## 🚀 Getting Started
 
@@ -73,44 +63,6 @@ PocketFarm is a comprehensive farming management system that helps farmers and a
 - Modern web browser
 
 ### Quick Installation
-
-1. **Clone the repository:**
-   ```sh
-   git clone https://github.com/arjun0604/PocketFarm.git
-   cd PocketFarm
-   ```
-2. **Set up the backend:**
-   ```sh
-   cd Backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-3. **Set up the frontend:**
-   ```sh
-   cd ../Frontend
-   npm install
-   ```
-
-### Running the Application
-
-1. **Start the backend server:**
-   ```sh
-   cd Backend
-   python app.py
-   ```
-2. **Start the frontend development server:**
-   ```sh
-   cd ../Frontend
-   npm start
-   ```
-3. **Visit** [http://localhost:3000](http://localhost:3000) to start your smart farming journey!
-
----
-
-## 🔧 Configuration
-
-Create a `.env` file in the `Backend` directory:
 
 1. Clone the repository:
 ```bash
@@ -143,21 +95,20 @@ python app.py
 2. Start the frontend development server:
 ```bash
 cd Frontend
-npm start
+npm run dev
 ```
 
-Visit `http://localhost:3000` to start your smart farming journey!
+Visit `http://localhost:8080` (or `http://localhost:3000`) to start your smart farming journey!
 
 ## 🔧 Configuration
 
-Create a `.env` file in the Backend directory:
+Create a `.env` file in the `Backend` directory:
 ```
 FLASK_APP=app.py
 FLASK_ENV=development
 SECRET_KEY=your_secret_key
 OPENWEATHERMAP_API_KEY=your_weather_api_key
 ```
-
 
 ## 🤝 Contributing
 
@@ -169,21 +120,7 @@ We welcome contributions! Whether you're a farmer, developer, or enthusiast, you
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
----
-
-## 📞 Contact
-
-- Email: arjunsanthosh10604@gmail.com
-- Project Link: https://github.com/arjun0604/PocketFarm 
-=======
-
 ## 📞 Contact
 
 - **Email**: arjunsanthosh10604@gmail.com
 - **Project Link**: https://github.com/arjun0604/PocketFarm
-
----
-
-<div align="center">
-</div> 
-

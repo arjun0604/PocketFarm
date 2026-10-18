@@ -1,8 +1,7 @@
 import { Crop, GrowingConditions } from '../types/cropTypes';
 import { mockCrops } from '../data/mockData';
 
-// Base URL constant for API calls
-const API_BASE_URL = 'http://127.0.0.1:5000';
+import { API_BASE_URL } from '@/config';
 
 export const fetchRecommendedCrops = async (conditions: GrowingConditions): Promise<Crop[]> => {
   console.log('Fetching recommendations with:', conditions);

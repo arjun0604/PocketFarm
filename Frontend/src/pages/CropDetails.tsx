@@ -10,6 +10,7 @@ import { Crop } from '@/utils/types/cropTypes';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 const CropDetails: React.FC = () => {
@@ -27,7 +28,7 @@ const CropDetails: React.FC = () => {
       if (!cropName) return;
 
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/crop/${encodeURIComponent(cropName)}`);
+        const response = await axios.get(`${API_BASE_URL}/crop/${encodeURIComponent(cropName)}`);
         setCrop(response.data);
       } catch (error) {
         console.error('Error fetching crop details:', error);

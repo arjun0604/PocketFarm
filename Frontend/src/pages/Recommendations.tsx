@@ -13,6 +13,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import Header from '@/components/Header';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import { useNavigationHistory } from '@/utils/useNavigationHistory';
 
 interface Notification {
@@ -35,12 +36,7 @@ const Recommendations: React.FC = () => {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { goBack } = useNavigationHistory();
-<<<<<<< HEAD
-  const [activeCompanionCropNames, setActiveCompanionCropNames] = useState<string[] | null>(null);
-  const [activeCompanionParent, setActiveCompanionParent] = useState<string | null>(null);
-  const [selectedCompanionParent, setSelectedCompanionParent] = useState<Crop | null>(null);
-=======
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
+  const [companionModalTriggered, setCompanionModalTriggered] = useState(false);
 
   useEffect(() => {
     const location = getUserLocation();
@@ -54,7 +50,7 @@ const Recommendations: React.FC = () => {
     setShowForm(false);
     setWantCompanion(conditions.wantCompanion);
     try {
-      const response = await fetch('http://127.0.0.1:5000/recommend', {
+      const response = await fetch(`${API_BASE_URL}/recommend`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,34 +91,32 @@ const Recommendations: React.FC = () => {
       console.log('Processed crops:', processedCrops); // Debug log
       setCrops(processedCrops);
 
-      // If companion crops are requested, fetch their details
-      if (conditions.wantCompanion) {
-        const companionCropNames = processedCrops.flatMap((crop: any) => crop.companion_crops || []);
-        const uniqueCompanionNames = [...new Set(companionCropNames)];
-        console.log('Unique companion crop names:', uniqueCompanionNames); // Debug log
-        
-        const companionDetails = await Promise.all(
-          uniqueCompanionNames.map(async (name: string) => {
-            try {
-              const response = await fetch(`http://127.0.0.1:5000/crop/${encodeURIComponent(name)}`);
-              if (response.ok) {
-                const data = await response.json();
-                console.log(`Fetched companion crop details for ${name}:`, data); // Debug log
-                return data;
-              }
-              console.warn(`Companion crop not found: ${name}`);
-              return null;
-            } catch (error) {
-              console.error(`Error fetching companion crop ${name}:`, error);
-              return null;
+      // Always fetch companion crop details for all recommended crops
+      const companionCropNames = processedCrops.flatMap((crop: any) => crop.companion_crops || []);
+      const uniqueCompanionNames = [...new Set(companionCropNames)];
+      console.log('Unique companion crop names:', uniqueCompanionNames); // Debug log
+      
+      const companionDetails = await Promise.all(
+        uniqueCompanionNames.map(async (name: string) => {
+          try {
+            const response = await fetch(`${API_BASE_URL}/crop/${encodeURIComponent(name)}`);
+            if (response.ok) {
+              const data = await response.json();
+              console.log(`Fetched companion crop details for ${name}:`, data); // Debug log
+              return data;
             }
-          })
-        );
+            console.warn(`Companion crop not found: ${name}`);
+            return null;
+          } catch (error) {
+            console.error(`Error fetching companion crop ${name}:`, error);
+            return null;
+          }
+        })
+      );
 
-        const validCompanionCrops = companionDetails.filter((crop): crop is Crop => crop !== null);
-        console.log('Valid companion crops:', validCompanionCrops); // Debug log
-        setCompanionCrops(validCompanionCrops);
-      }
+      const validCompanionCrops = companionDetails.filter((crop): crop is Crop => crop !== null);
+      console.log('Valid companion crops:', validCompanionCrops); // Debug log
+      setCompanionCrops(validCompanionCrops);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
       toast.error('Failed to get recommendations. Please try again.');
@@ -161,7 +155,7 @@ const Recommendations: React.FC = () => {
     queryFn: async () => {
       if (!user) return [];
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/notifications/${Number(user.id)}`);
+        const response = await axios.get(`${API_BASE_URL}/notifications/${Number(user.id)}`);
         return response.data;
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -176,36 +170,6 @@ const Recommendations: React.FC = () => {
       setNotifications(userNotifications);
     }
   }, [userNotifications]);
-
-<<<<<<< HEAD
-  const handleCompanionCropSelect = async (parentCrop: Crop, companionCropNames: string[]) => {
-    // Find which companion crops are missing from companionCrops
-    const missingNames = companionCropNames.filter(
-      name => !companionCrops.some(crop => crop.name === name)
-    );
-    let newCompanions: Crop[] = [];
-    if (missingNames.length > 0) {
-      // Fetch missing companion crop details
-      const fetched = await Promise.all(
-        missingNames.map(async (name) => {
-          try {
-            const response = await fetch(`http://127.0.0.1:5000/crop/${encodeURIComponent(name)}`);
-            if (response.ok) {
-              return await response.json();
-            }
-          } catch (e) {}
-          return null;
-        })
-      );
-      newCompanions = fetched.filter(Boolean);
-      setCompanionCrops(prev => [...prev, ...newCompanions]);
-    }
-    setSelectedCompanionParent({ ...parentCrop, companion_crops: companionCropNames });
-=======
-  const handleCompanionCropSelect = (crop: Crop, companionCropNames: string[]) => {
-    setSelectedCrop(crop);
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
-  };
 
   if (!isAuthenticated) {
     return <Navigate to="/" />;
@@ -241,22 +205,17 @@ const Recommendations: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {crops.slice(0, visibleCrops).map((crop) => (
-<<<<<<< HEAD
                     <React.Fragment key={crop.id}>
-=======
-                    <div key={crop.id}>
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                       <CropCard
                         crop={crop}
                         onAddToGarden={() => handleAddToGarden(crop)}
                         onRemoveFromGarden={() => removeCropFromGarden(crop.name)}
-                        onSelectCompanion={(companionCropNames) => handleCompanionCropSelect(crop, companionCropNames)}
+                        onSelectCompanion={() => {
+                          setSelectedCrop(crop);
+                          setCompanionModalTriggered(true);
+                        }}
                       />
-<<<<<<< HEAD
                     </React.Fragment>
-=======
-                    </div>
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                   ))}
                 </div>
                 {visibleCrops < crops.length && (
@@ -279,33 +238,20 @@ const Recommendations: React.FC = () => {
         )}
       </main>
 
-<<<<<<< HEAD
-      {/* Hovering Window for Companion Crops (toggle or link click) */}
-      {(selectedCompanionParent && selectedCompanionParent.companion_crops && selectedCompanionParent.companion_crops.length > 0) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card rounded-lg p-6 max-w-2xl w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Companion Plants for {selectedCompanionParent.name}</h3>
-              <Button variant="ghost" size="icon" onClick={() => setSelectedCompanionParent(null)}>
-=======
-      {/* Hovering Window for Companion Crops */}
-      {selectedCrop && selectedCrop.companion_crops && selectedCrop.companion_crops.length > 0 && wantCompanion && (
+      {/* Modal for Companion Crops */}
+      {((wantCompanion && selectedCrop && selectedCrop.companion_crops && selectedCrop.companion_crops.length > 0) ||
+        (companionModalTriggered && selectedCrop && selectedCrop.companion_crops && selectedCrop.companion_crops.length > 0)) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-card rounded-lg p-6 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Companion Plants for {selectedCrop.name}</h3>
-              <Button variant="ghost" size="icon" onClick={() => setSelectedCrop(null)}>
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
+              <Button variant="ghost" size="icon" onClick={() => { setSelectedCrop(null); setCompanionModalTriggered(false); }}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {companionCrops
-<<<<<<< HEAD
-                .filter(crop => selectedCompanionParent.companion_crops.includes(crop.name))
-=======
                 .filter(crop => selectedCrop.companion_crops.includes(crop.name))
->>>>>>> bd89cbc06c263483627aab2fc3138dbac14c09b2
                 .map((crop) => (
                   <CropCard
                     key={crop.id}

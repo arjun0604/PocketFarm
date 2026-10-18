@@ -5,8 +5,11 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
+import os
+
 # Load the dataset
-data = pd.read_csv('crop.csv')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+data = pd.read_csv(os.path.join(BASE_DIR, 'crop.csv'))
 
 # Preprocess the data
 X = data[['Sunlight', 'Water Needs', 'Avg Temp', 'Avg Humidity', 'Avg Area']]
@@ -15,7 +18,7 @@ y = data[['Crop', 'Drainage', 'Terrace/Backyard', 'Companion Crop 1', 'Companion
 # One-hot encode categorical features
 preprocessor = ColumnTransformer(
     transformers=[
-        ('cat', OneHotEncoder(), ['Sunlight', 'Water Needs']),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), ['Sunlight', 'Water Needs']),
     ],
     remainder='passthrough'
 )

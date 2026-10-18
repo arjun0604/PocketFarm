@@ -2,8 +2,7 @@ import { Nursery } from '../types/cropTypes';
 import { mockNurseries } from '../data/mockData';
 import { getDistance } from '../locationUtils';
 
-// Base URL constant for API calls
-const API_BASE_URL = 'http://127.0.0.1:5000';
+import { API_BASE_URL } from '@/config';
 
 // Fetch nearby nurseries using Overpass API
 export const fetchNearbyNurseries = async (latitude: number, longitude: number): Promise<Nursery[]> => {

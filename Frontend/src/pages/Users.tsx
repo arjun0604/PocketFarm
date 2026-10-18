@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import Header from '@/components/Header';
 
 interface User {
@@ -23,7 +24,7 @@ const Users: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/users');
+        const response = await axios.get(`${API_BASE_URL}/users`);
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);

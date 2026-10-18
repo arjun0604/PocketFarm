@@ -7,8 +7,10 @@ export * from './api/nurseryApi';
 export * from './storage/cropStorage';
 export * from './helpers/cropHelpers';
 
+import { API_BASE_URL } from '@/config';
+
 // Determine the API base URL - used for consistency across all API calls
 export const getApiBaseUrl = () => {
-  // Return the fixed base URL per requirements
-  return 'http://127.0.0.1:5000';
+  return API_BASE_URL;
 };
+

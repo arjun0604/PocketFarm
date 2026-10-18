@@ -12,6 +12,7 @@ import { useGarden } from '@/context/GardenContext';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Crop } from '@/utils/types/cropTypes';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import { format } from 'date-fns';
 import Header from '@/components/Header';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -48,7 +49,7 @@ const UserProfile: React.FC = () => {
     const fetchCropDetails = async () => {
       try {
         const cropDetailsPromises = userCrops.map(async (cropName) => {
-          const response = await axios.get(`http://127.0.0.1:5000/crop/${encodeURIComponent(cropName)}`);
+          const response = await axios.get(`${API_BASE_URL}/crop/${encodeURIComponent(cropName)}`);
           return response.data;
         });
 
@@ -59,7 +60,7 @@ const UserProfile: React.FC = () => {
         const completedCropsPromises = crops.map(async (crop) => {
           try {
             // Get all schedules for the user
-            const scheduleResponse = await axios.get(`http://127.0.0.1:5000/user_schedule/${user?.id}`);
+            const scheduleResponse = await axios.get(`${API_BASE_URL}/user_schedule/${user?.id}`);
             const schedules = scheduleResponse.data;
             
             // Find the schedule for this crop
